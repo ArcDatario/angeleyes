@@ -8,7 +8,7 @@ require_once '../db.php';
   <?php include "includes/default-src.php";?>
   <link rel="stylesheet" href="assets/css/plans.css">
   <style>
-    .toast-container {
+    .toast {
         position: fixed;
         top: 20px;
         left: 50%;
@@ -147,6 +147,7 @@ require_once '../db.php';
   </div>
   <?php include "includes/default-scripts.php";?>
 
+    <div class="toast"></div>
 <script>
 $(document).ready(function() {
   // Initialize modals with proper options
@@ -345,22 +346,8 @@ $(document).ready(function() {
     }, 'json');
   }
     
-  // Function to show toast messages
-  function showToast(message, type) {
-    const toast = $(`
-      <div class="toast align-items-center text-white bg-${type === 'error' ? 'danger' : 'success'} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-          <div class="toast-body">
-            ${message}
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-      </div>
-    `);
-        
-    $('.toast-container').append(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
+  // Function to show toast messages using the single <div class="toast"></div>
+  
 });
 </script>
 </body>

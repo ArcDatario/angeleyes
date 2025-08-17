@@ -8,3 +8,4 @@
 <script src="assets/js/sidebarmenu.js"></script>
 <script src="assets/js/app.min.js"></script>
 <script src="assets/js/script.js"></script>
+<script src="assets/js/toast.js"></script>
