@@ -4,14 +4,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CitiCable</title>
+  <title>Angeleyes</title>
   <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="assets/css/styles.min.css" />
   <link rel="stylesheet" href="assets/css/added-style.css" />
 
 
   <script>
-     const logo = document.getElementById('citiCableLogo');
+     const logo = document.getElementById('AngeleyesLogo');
   
   // Click animation
   logo.addEventListener('click', function() {
@@ -50,7 +50,7 @@
       <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
           <a href="./dashboard" class="text-nowrap logo-img">
-           <h4 class="logo-h4">CitiCable</h4>
+           <h4 class="logo-h4">Angeleyes</h4>
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -85,7 +85,7 @@
           </ul>
           <div class="navbar-collapse justify-content-end px-0" id="navbarNav">
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-end">
-              <!-- <a href="https://adminmart.com/product/CitiCable-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Download Free</a> -->
+              <!-- <a href="https://adminmart.com/product/Angeleyes-free-bootstrap-admin-dashboard/" target="_blank" class="btn btn-primary">Download Free</a> -->
               <li class="nav-item dropdown">
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                   aria-expanded="false">
