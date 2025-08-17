@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Remove .php extension from URLs (including admin folder)
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^/]+)/?$ $1.php [L]
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^admin/([^/]+)/?$ admin/$1.php [L]
+
+# Make /home load index.php
+RewriteRule ^home/?$ index.php [L]
+# Make /admin/home load admin/index.php
+RewriteRule ^admin/home/?$ admin/index.php [L]
