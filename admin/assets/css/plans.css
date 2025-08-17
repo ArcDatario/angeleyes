@@ -1,0 +1,76 @@
+ /* Pricing Section */
+  #pricing {
+      background: white;
+  }
+
+  .pricing-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    
+  }
+
+  .pricing-card {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      position: relative;
+    overflow: hidden;
+  }
+
+  /* allow the badge to overflow the card and ensure visibility */
+  .pricing-card.popular {
+    overflow: visible;
+  }
+
+  /* Visible badge element inside the popular card */
+  .pricing-card .plan-badge {
+    position: absolute;
+    top: 10px;
+    right: -18px;
+    color:white !important;
+    background-color: #6366f1 !important;
+    color: #fff;
+    padding: 0.25rem 0.9rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    transform: rotate(50deg);
+    transform-origin: center;
+    z-index: 20;
+    box-shadow: 0 6px 14px rgba(16, 24, 40, 0.12);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+
+  .pricing-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--primary);
+  }
+
+  .price {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+  }
+
+  .price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--gray);
+  }
+
+  .pricing-features {
+      margin-bottom: 2rem;
+  }
+
+  .pricing-features li {
+      margin-bottom: 0.8rem;
+      color: var(--gray);
+  }
+  /* keep card button consistent with admin styles */
+  .pricing-card .cta-button { display: inline-block; }
