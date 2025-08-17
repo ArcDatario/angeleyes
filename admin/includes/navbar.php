@@ -23,7 +23,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./transactions.php" aria-expanded="false">
+              <a class="sidebar-link" href="./transactions" aria-expanded="false">
                 <span>
                   <i class="ti ti-receipt"></i>
                 </span>
@@ -31,15 +31,15 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./plan.php" aria-expanded="false">
+              <a class="sidebar-link" href="./plans" aria-expanded="false">
                 <span>
                   <i class="ti ti-layout-grid"></i>
                 </span>
-                <span class="hide-menu">Plan</span>
+                <span class="hide-menu">Plans</span>
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./subscribers.php" aria-expanded="false">
+              <a class="sidebar-link" href="./subscribers" aria-expanded="false">
                 <span>
                   <i class="ti ti-users"></i>
                 </span>
@@ -47,7 +47,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./admins.php" aria-expanded="false">
+              <a class="sidebar-link" href="./admins" aria-expanded="false">
                 <span>
                   <i class="ti ti-shield-check"></i>
                 </span>
@@ -59,7 +59,7 @@
               <span class="hide-menu">LOG OUT</span>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link" href="./logout.php" aria-expanded="false">
+              <a class="sidebar-link" href="./logout" aria-expanded="false">
                 <span>
                   <i class="ti ti-logout"></i>
                 </span>
