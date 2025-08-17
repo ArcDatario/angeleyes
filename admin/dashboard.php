@@ -7,51 +7,8 @@
   <title>CitiCable</title>
   <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
   <link rel="stylesheet" href="assets/css/styles.min.css" />
+  <link rel="stylesheet" href="assets/css/added-style.css" />
 
-  <style>
-     .logo-h4 {
-    font-family: 'Arial', sans-serif;
-    font-size: 2rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #1cb4dc 0%, #0d8bf0 50%, #045de9 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    display: inline-block;
-    padding: 0.5rem 1rem;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .logo-h4::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, #1cb4dc, #045de9);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 0.3s ease;
-  }
-  
-  .logo-h4:hover {
-    transform: translateY(-3px);
-    text-shadow: 0 4px 8px rgba(28, 180, 220, 0.3);
-  }
-  
-  .logo-h4:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-  
-  .logo-h4:active {
-    transform: translateY(1px);
-  }
-  </style>
 
   <script>
      const logo = document.getElementById('citiCableLogo');
