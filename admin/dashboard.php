@@ -1,43 +1,7 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Angeleyes</title>
-  <link rel="shortcut icon" type="image/png" href="assets/images/logos/favicon.png" />
-  <link rel="stylesheet" href="assets/css/styles.min.css" />
-  <link rel="stylesheet" href="assets/css/added-style.css" />
-
-
-  <script>
-     const logo = document.getElementById('AngeleyesLogo');
-  
-  // Click animation
-  logo.addEventListener('click', function() {
-    this.style.animation = 'pulse 0.5s';
-    setTimeout(() => {
-      this.style.animation = '';
-    }, 500);
-  });
-  
-  // Follow mouse tilt effect
-  logo.addEventListener('mousemove', (e) => {
-    const rect = logo.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const angleX = (y - centerY) / 10;
-    const angleY = (centerX - x) / 10;
-    
-    logo.style.transform = `perspective(500px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateY(-3px)`;
-  });
-  
-  logo.addEventListener('mouseleave', () => {
-    logo.style.transform = 'perspective(500px) rotateX(0) rotateY(0)';
-  });
-  </script>
+  <?php include "includes/default-src.php";?>
 </head>
 
 <body>
@@ -471,6 +435,7 @@
   <script src="assets/libs/apexcharts/dist/apexcharts.min.js"></script>
   <script src="assets/libs/simplebar/dist/simplebar.js"></script>
   <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/script.js"></script>
 </body>
 
 </html>
