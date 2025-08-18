@@ -78,6 +78,21 @@ try {
         $response['success'] = true;
         $response['subscribers'] = $subscribers;
     }
+    // UPDATE SUBSCRIPTION COUNT
+    elseif ($action === 'update_subscription_count') {
+        $id = (int)$_POST['id'];
+        $increment = (int)$_POST['increment'];
+        
+        $stmt = $conn->prepare("UPDATE subscribers SET subscription_count = subscription_count + ? WHERE id = ?");
+        $stmt->bind_param("ii", $increment, $id);
+        
+        if (!$stmt->execute()) {
+            throw new Exception('Failed to update subscription count');
+        }
+        
+        $response['success'] = true;
+        $response['message'] = 'Subscription count updated';
+    }
     else {
         throw new Exception('Invalid action');
     }

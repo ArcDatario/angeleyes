@@ -24,6 +24,11 @@ require_once '../db.php';
         height: 40px;
         object-fit: cover;
     }
+    .card-body {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* x-offset, y-offset, blur, color */
+    border-radius: 8px; /* optional, for rounded corners */
+    padding: 16px; /* optional, for spacing inside */
+    }
   </style>
 </head>
 
@@ -158,6 +163,12 @@ $(document).ready(function() {
         focus: false
     });
 
+    // Change the view button click handler in subscribers.php
+    $(document).on('click', '.view-subscriber', function(e) {
+        e.preventDefault();
+        const subscriberId = $(this).data('id');
+        window.location.href = `subscriptions.php?id=${subscriberId}`;
+    });
     // Load subscribers on page load
     loadSubscribers();
     
