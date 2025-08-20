@@ -1,1 +1,27 @@
 xnd_development_4D5fF5YYez3z4EG01BPr4wriMZjkGfy9gitazM6IccEwEbSfl6bv1dhTcF6Aha
+
+db password
+
+xYlH^ci~C5
+
+
+
+
+<?php
+$host = 'localhost';
+$db   = 'xendit_webhook.php'; // Change this to your database name
+$user = 'xendit_webhook.php';
+$pass = 'xYlH^ci~C5';
+$charset = 'utf8mb4';
+
+// Create connection
+$conn = new mysqli($host, $user, $pass, $db);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Set charset
+$conn->set_charset($charset);
+?>

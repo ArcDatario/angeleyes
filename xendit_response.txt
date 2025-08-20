@@ -1,0 +1,690 @@
+// Payment Succeeded
+{
+    "event": "payment.succeeded",
+    "business_id": "sample_business_id",
+    "created": "2022-02-16T06:01:09.997108276Z",
+    "data": {
+        "id": "pymt-2e9badf8-1473-4e8a-a1cf-d1e3214afc0f",
+        "amount": 15000,
+        "country": "ID",
+        "created": "2022-02-16T06:01:07.322974428Z",
+        "currency": "IDR",
+        "payment_request_id": "pr-df560c7d-b059-4789-ad2f-3cee5d8230a8",
+        "reference_id": "a5151a05-e84d-4cef-bb17-1ref3e7fb3a",
+        "status": "SUCCEEDED",
+        "customer_id": null,
+        "description": null,
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs0443db7",
+            "type": "OVER_THE_COUNTER",
+            "reusability": "ONE_TIME_USE",
+            "status": "EXPIRED",
+            "over_the_counter": {
+                "channel_code": "INDOMARET",
+                "channel_properties": {
+                    "customer_name": "John Doe",
+                    "expires_at": "2022-02-18T06:00:49.018714479Z",
+                    "payment_code": "XENVCQKCUBNRQ"
+                }
+            },
+            "metadata": {
+                "key": "value"
+            },
+            "direct_debit": null,
+            "ewallet": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "metadata": {
+            "key": "value"
+        },
+        "payment_detail": null,
+        "failure_code": null,
+        "channel_properties": null,
+        "updated": "2022-02-16T06:01:07.322974428Z"
+    }
+}
+
+
+// Payment Awaiting Capture
+
+{
+    "event": "payment.awaiting_capture",
+    "business_id": "sample_business_id",
+    "created": "2022-02-16T06:01:09.997108276Z",
+    "data": {
+        "id": "ca_62fd91b51f9b98001ba724c7",
+        "amount": 10000,
+        "country": "ID",
+        "created": "2022-02-16T06:01:07.322974428Z",
+        "currency": "IDR",
+        "payment_request_id": "pr-df560c7d-b059-4789-ad2f-6fea5d8235eb",
+        "reference_id": "a5151a05-e84d-4cef-bb17-1ref3e7f86n",
+        "status": "AWAITING_CAPTURE",
+        "customer_id": null,
+        "description": null,
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs04465hb",
+            "business_id": "sample_business_id",
+            "type": "CARD",
+            "reusability": "MULTIPLE_USE",
+            "status": "ACTIVE",
+            "metadata": {
+                "key": "value"
+            },
+            "country": "ID",
+            "card": {
+                "currency": "IDR",
+                "channel_properties": {
+                    "success_return_url": "https://example.com",
+                    "failure_return_url": "https://example.com"
+                },
+                "card_information": {
+                    "token_id": "62ec6da733fce4001a24b892",
+                    "masked_card_number": "400000XXXXXX0002",
+                    "cardholder_name": null,
+                    "expiry_month": "12",
+                    "expiry_year": "2027",
+                    "type": "CREDIT",
+                    "network": "VISA",
+                    "country": "ID",
+                    "issuer": "BRI",
+                    "fingerprint": "628af893d40834225b2f41b4"
+                },
+                "card_verification_results": {
+                    "three_d_secure": {
+                        "three_d_secure_flow": "CHALLENGE",
+                        "eci_code": "05",
+                        "three_d_secure_result": "SUCCESSFUL",
+                        "three_d_secure_version": "2.2.0"
+                    },
+                    "cvv_result": "MATCHED",
+                    "address_verification_result": "MATCHED"
+                }
+            },
+            "direct_bank_transfer": null,
+            "direct_debit": null,
+            "ewallet": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "over_the_counter": null,
+            "billing_information": null,
+            "actions": [],
+            "description": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "metadata": {
+            "key": "value"
+        },
+        "payment_detail": null,
+        "failure_code": null,
+        "channel_properties": null,
+        "updated": "2022-02-16T06:01:07.322974428Z"
+    }
+}
+
+
+Payment Pending
+{
+    "event": "payment.succeeded",
+    "business_id": "sample_business_id",
+    "created": "2022-02-16T06:01:09.997108276Z",
+    "data": {
+        "id": "pymt-2e9badf8-1473-4e8a-a1cf-d1e3214afc0f",
+        "amount": 15000,
+        "country": "ID",
+        "created": "2022-02-16T06:01:07.322974428Z",
+        "currency": "IDR",
+        "payment_request_id": "pr-df560c7d-b059-4789-ad2f-3cee5d8230a8",
+        "reference_id": "a5151a05-e84d-4cef-bb17-1ref3e7fb3a",
+        "status": "SUCCEEDED",
+        "customer_id": null,
+        "description": null,
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs0443db7",
+            "type": "OVER_THE_COUNTER",
+            "reusability": "ONE_TIME_USE",
+            "status": "EXPIRED",
+            "over_the_counter": {
+                "channel_code": "INDOMARET",
+                "channel_properties": {
+                    "customer_name": "John Doe",
+                    "expires_at": "2022-02-18T06:00:49.018714479Z",
+                    "payment_code": "XENVCQKCUBNRQ"
+                }
+            },
+            "metadata": {
+                "key": "value"
+            },
+            "direct_debit": null,
+            "ewallet": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "metadata": {
+            "key": "value"
+        },
+        "payment_detail": null,
+        "failure_code": null,
+        "channel_properties": null,
+        "updated": "2022-02-16T06:01:07.322974428Z"
+    }
+}
+
+
+Payment Failed
+
+{
+    "event": "payment.failed",
+    "business_id": "sample_business_id",
+    "created": "2022-02-16T06:01:09.997108276Z",
+    "data": {
+        "id": "pymt-2e9badf8-1473-4e8a-a1cf-d1e3214afc0f",
+        "amount": 15000,
+        "country": "ID",
+        "created": "2022-02-16T06:01:07.322974428Z",
+        "currency": "IDR",
+        "payment_request_id": "pr-df560c7d-b059-4789-ad2f-3cee5d8230a8",
+        "reference_id": "a5151a05-e84d-4cef-bb17-1ref3e7fb3a",
+        "status": "FAILED",
+        "customer_id": null,
+        "description": null,
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs0443db7",
+            "type": "EWALLET",
+            "reusability": "ONE_TIME_USE",
+            "status": "EXPIRED",
+            "ewallet": {
+                "account": {
+                    "account_details": "string",
+                    "balance": 100,
+                    "name": "string",
+                    "point_balance": 100
+                },
+                "channel_code": "string",
+                "channel_properties": {
+                    "success_redirect_url": "http://redirect.me/success",
+                    "failure_redirect_url": "http://redirect.me/failure"
+                }
+            },
+            "metadata": {
+                "key": "value"
+            },
+            "direct_debit": null,
+            "over_the_counter": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "metadata": {
+            "key": "value"
+        },
+        "payment_detail": null,
+        "failure_code": "value",
+        "channel_properties": null,
+        "updated": "2022-02-16T06:01:07.322974428Z"
+    }
+}
+
+
+Captured Succeeded
+
+{
+    "event": "capture.succeeded",
+    "business_id": "1b8e079c",
+    "created": "2020-03-26T05:44:26+0800",
+    "data": {
+        "id": "cap-48d749c9-dd46-462c-bece-c3e73cd94125",
+        "payment_request_id": "pr-48d749c9-dd46-462c-bece-c3e73cd94125",
+        "reference_id": "0f38e017-007f-4134-9e5d-86657ec0cf77",
+        "currency": "IDR",
+        "authorized_amount": 10000000,
+        "captured_amount": 1000000,
+        "status": "SUCCEEDED",
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs04465hb",
+            "business_id": "sample_business_id",
+            "type": "CARD",
+            "reusability": "MULTIPLE_USE",
+            "status": "ACTIVE",
+            "metadata": {
+                "key": "value"
+            },
+            "country": "ID",
+            "card": {
+                "currency": "IDR",
+                "channel_properties": {
+                    "success_return_url": "https://example.com",
+                    "failure_return_url": "https://example.com"
+                },
+                "card_information": {
+                    "token_id": "62ec6da733fce4001a24b892",
+                    "masked_card_number": "400000XXXXXX0002",
+                    "cardholder_name": null,
+                    "expiry_month": "12",
+                    "expiry_year": "2027",
+                    "type": "CREDIT",
+                    "network": "VISA",
+                    "country": "ID",
+                    "issuer": "BRI",
+                    "fingerprint": "628af893d40834225b2f41b4"
+                },
+                "card_verification_results": {
+                    "three_d_secure": {
+                        "three_d_secure_flow": "CHALLENGE",
+                        "eci_code": "05",
+                        "three_d_secure_result": "SUCCESSFUL",
+                        "three_d_secure_version": "2.2.0"
+                    },
+                    "cvv_result": "MATCHED",
+                    "address_verification_result": "MATCHED"
+                }
+            },
+            "direct_bank_transfer": null,
+            "direct_debit": null,
+            "ewallet": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "over_the_counter": null,
+            "billing_information": null,
+            "actions": [],
+            "description": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "channel_properties": null,
+        "created": "2020-08-29T09:12:33.001Z",
+        "updated": "2020-08-29T09:12:33.001Z",
+        "metadata": {
+            "sku": "ABCDEFGH"
+        }
+    }
+}
+
+Captured Failed
+
+{
+    "event": "capture.failed",
+    "business_id": "1b8e079c",
+    "created": "2020-03-26T05:44:26+0800",
+    "data": {
+        "id": "cap-48d749c9-dd46-462c-bece-c3e73cd94125",
+        "payment_request_id": "pr-48d749c9-dd46-462c-bece-c3e73cd94125",
+        "reference_id": "0f38e017-007f-4134-9e5d-86657ec0cf77",
+        "currency": "IDR",
+        "authorized_amount": 10000000,
+        "captured_amount": 1000000,
+        "status": "FAILED",
+        "payment_method": {
+            "id": "pm-e12563a5-a970-4fff-ba3b-242cs04465hb",
+            "business_id": "sample_business_id",
+            "type": "CARD",
+            "reusability": "MULTIPLE_USE",
+            "status": "ACTIVE",
+            "metadata": {
+                "key": "value"
+            },
+            "country": "ID",
+            "card": {
+                "currency": "IDR",
+                "channel_properties": {
+                    "success_return_url": "https://example.com",
+                    "failure_return_url": "https://example.com"
+                },
+                "card_information": {
+                    "token_id": "62ec6da733fce4001a24b892",
+                    "masked_card_number": "400000XXXXXX0002",
+                    "cardholder_name": null,
+                    "expiry_month": "12",
+                    "expiry_year": "2027",
+                    "type": "CREDIT",
+                    "network": "VISA",
+                    "country": "ID",
+                    "issuer": "BRI",
+                    "fingerprint": "628af893d40834225b2f41b4"
+                },
+                "card_verification_results": {
+                    "three_d_secure": {
+                        "three_d_secure_flow": "CHALLENGE",
+                        "eci_code": "05",
+                        "three_d_secure_result": "SUCCESSFUL",
+                        "three_d_secure_version": "2.2.0"
+                    },
+                    "cvv_result": "MATCHED",
+                    "address_verification_result": "MATCHED"
+                }
+            },
+            "direct_bank_transfer": null,
+            "direct_debit": null,
+            "ewallet": null,
+            "qr_code": null,
+            "virtual_account": null,
+            "over_the_counter": null,
+            "billing_information": null,
+            "actions": [],
+            "description": null,
+            "created": "2022-02-16T06:00:49.078139Z",
+            "updated": "2022-02-16T06:00:49.078139Z"
+        },
+        "channel_properties": null,
+        "created": "2020-08-29T09:12:33.001Z",
+        "updated": "2020-08-29T09:12:33.001Z",
+        "metadata": {
+            "sku": "ABCDEFGH"
+        }
+    }
+}
+
+
+Payment Requests V3 (/v3/payment_requests)
+
+Payment Status
+
+{
+    "created": "2025-02-13T08:29:41.734Z",
+    "business_id": "62440e322008e87fb29c1fd0",
+    "event": "payment.capture",
+    "api_version": "v3",
+    "data": {
+        "payment_id": "py-97716cc2-2840-4ead-949b-db60e9aeb55e",
+        "business_id": "62440e322008e87fb29c1fd0",
+        "reference_id": "90392f42-d98a-49ef-a7f3-90392f42d98a",
+        "payment_request_id": "pr-ced7965b-d588-49f1-ba41-d499277e5395",
+        "customer_id": "cust-c1a6b0a0-a501-4479-8b57-d038601f139e",
+        "type": "PAY",
+        "country": "ID",
+        "currency": "IDR",
+        "request_amount": 10000,
+        "capture_method": "AUTOMATIC",
+        "channel_code": "CARDS",
+        "status": "SUCCEEDED",
+        "captures": [
+            {
+                "capture_id": "cptr-d87d1219-08ad-4ab1-84db-1c4c4f6aa0bd",
+                "capture_timestamp": "2025-02-13T08:29:41.149Z",
+                "capture_amount": 10000
+            }
+        ],
+        "payment_details": {
+            "authorization_data": {
+                "cvn_verification_result": "M",
+                "address_verification_result": "M",
+                "network_response_code": "00",
+                "network_response_code_descriptor": "Approved and completed sucessfully",
+                "authorization_code": "831000",
+                "retrieval_reference_number": "504408583907",
+                "acquirer_merchant_id": "xendit_ctv_agg",
+                "reconciliation_id": "7394353802126356203812",
+                "network_transaction_id": "016153570198200"
+            }
+        },
+        "created": "2025-02-13T08:29:35.435Z",
+        "updated": "2025-02-13T08:29:35.444Z"
+    }
+}
+
+
+Payment Request Status
+
+{
+    "created": "2025-02-13T09:05:36.697Z",
+    "business_id": "62440e322008e87fb29c1fd0",
+    "event": "payment_request.expiry",
+    "api_version": "v3",
+    "data": {
+        "payment_request_id": "pr-f16f1655-89f1-48d7-b9e8-e3454d689974",
+        "country": "ID",
+        "currency": "IDR",
+        "business_id": "62440e322008e87fb29c1fd0",
+        "reference_id": "90392f42-d98a-49ef-a7f3-90392f42d98a",
+        "description": "Payment Request description",
+        "created": "2025-02-13T09:05:23.155Z",
+        "updated": "2025-02-13T09:05:23.300Z",
+        "status": "EXPIRED",
+        "capture_method": "AUTOMATIC",
+        "channel_code": "BRI_VIRTUAL_ACCOUNT",
+        "customer_id": "cust-c1a6b0a0-a501-4479-8b57-d038601f139e",
+        "request_amount": 10000,
+        "channel_properties": {
+            "display_name": "MERCHANTNAME",
+            "expires_at": "2025-02-13T09:05:35.953594182Z"
+        },
+        "type": "PAY",
+        "actions": []
+    }
+}
+
+eWallet Payment Status
+
+{
+    "data": {
+        "id": "ewc_95d47d3a-db03-4b4b-9b6c-71077157cbc8",
+        "basket": null,
+        "status": "SUCCEEDED",
+        "actions": {
+            "mobile_web_checkout_url": "",
+            "desktop_web_checkout_url": "",
+            "mobile_deeplink_checkout_url": "https://wsa.uat.wallet.airpay.co.id/universal-link/wallet/pay?deep_and_deferred=1&token=dFhkbmR1bTBIamhWwFfJaB-n_6eGjr1eAHnlwWEJDsEpIU_-8m0QS5Tb1nFp_ZEtGrgHWKV8LuV6rwVL2COCVw"
+        },
+        "created": "2020-10-21T13:57:43.355897Z",
+        "updated": "2020-10-21T13:57:43.730483Z",
+        "currency": "IDR",
+        "metadata": {
+            "branch_code": "senayan_372"
+        },
+        "voided_at": null,
+        "capture_now": true,
+        "customer_id": null,
+        "callback_url": "https://webhook.site/5eebb675-6102-453a-a81c-de95fb08bc77",
+        "channel_code": "ID_SHOPEEPAY",
+        "failure_code": null,
+        "reference_id": "test-payload",
+        "charge_amount": 20000,
+        "capture_amount": 20000,
+        "checkout_method": "ONE_TIME_PAYMENT",
+        "payment_method_id": null,
+        "channel_properties": {
+            "success_redirect_url": "https://google.com"
+        },
+        "is_redirect_required": true
+    },
+    "event": "ewallet.capture",
+    "created": "2020-10-21T13:59:14.536400713Z",
+    "business_id": "59e0daf7049b567510c63f67"
+}
+
+
+eWallet Reconciliation Update
+{
+    "data": {
+        "id": "ewc_95d47d3a-db03-4b4b-9b6c-71077157cbc8",
+        "basket": null,
+        "status": "SUCCEEDED",
+        "actions": {
+            "mobile_web_checkout_url": "",
+            "desktop_web_checkout_url": "",
+            "mobile_deeplink_checkout_url": "https://wsa.uat.wallet.airpay.co.id/universal-link/wallet/pay?deep_and_deferred=1&token=dFhkbmR1bTBIamhWwFfJaB-n_6eGjr1eAHnlwWEJDsEpIU_-8m0QS5Tb1nFp_ZEtGrgHWKV8LuV6rwVL2COCVw"
+        },
+        "created": "2020-10-21T13:57:43.355897Z",
+        "updated": "2020-10-21T13:57:43.730483Z",
+        "currency": "IDR",
+        "metadata": {
+            "branch_code": "senayan_372"
+        },
+        "voided_at": null,
+        "capture_now": true,
+        "customer_id": null,
+        "callback_url": "https://webhook.site/5eebb675-6102-453a-a81c-de95fb08bc77",
+        "channel_code": "ID_SHOPEEPAY",
+        "failure_code": null,
+        "reference_id": "test-payload",
+        "charge_amount": 20000,
+        "capture_amount": 20000,
+        "checkout_method": "ONE_TIME_PAYMENT",
+        "payment_method_id": null,
+        "channel_properties": {
+            "success_redirect_url": "https://google.com"
+        },
+        "is_redirect_required": true
+    },
+    "event": "ewallet.capture",
+    "created": "2020-10-21T13:59:14.536400713Z",
+    "business_id": "59e0daf7049b567510c63f67"
+}
+
+QR code paid & refunded
+{
+    "event": "qr.payment",
+    "created": "2020-01-08T18:18:18.857Z",
+    "business_id": "59e0daf7049b567510c63f67",
+    "data": {
+        "id": "qrpy_8182837te-87st-49ing-8696-1239bd4d759c",
+        "business_id": "62dd802cc1a7bb74407bfce9",
+        "currency": "IDR",
+        "amount": 1500,
+        "status": "SUCCEEDED",
+        "created": "2020-01-08T18:18:18.857Z",
+        "qr_id": "qr_8182837te-87st-49ing-8696-1239bd4d759c",
+        "qr_string": "0002010102##########CO.XENDIT.WWW011893600#######14220002152#####414220010303TTT####015CO.XENDIT.WWW02180000000000000000000TTT52045######ID5911XenditQRIS6007Jakarta6105121606##########3k1mOnF73h11111111#3k1mOnF73h6v53033605401163040BDB",
+        "reference_id": "testing_id_123",
+        "type": "DYNAMIC",
+        "channel_code": "ID_DANA",
+        "expires_at": "2020-01-08T18:48:18.857Z",
+        "metadata": {
+            "branch_code": "senayan_372"
+        },
+        "payment_detail": {
+            "receipt_id": "000111666",
+            "source": "GOPAY"
+        }
+    }
+}
+
+
+QR Reconciliation
+{
+    "event": "qr.payment",
+    "created": "2020-01-08T18:18:18.857Z",
+    "business_id": "59e0daf7049b567510c63f67",
+    "data": {
+        "id": "qrpy_8182837te-87st-49ing-8696-1239bd4d759c",
+        "business_id": "62dd802cc1a7bb74407bfce9",
+        "currency": "IDR",
+        "amount": 1500,
+        "status": "SUCCEEDED",
+        "created": "2020-01-08T18:18:18.857Z",
+        "qr_id": "qr_8182837te-87st-49ing-8696-1239bd4d759c",
+        "qr_string": "0002010102##########CO.XENDIT.WWW011893600#######14220002152#####414220010303TTT####015CO.XENDIT.WWW02180000000000000000000TTT52045######ID5911XenditQRIS6007Jakarta6105121606##########3k1mOnF73h11111111#3k1mOnF73h6v53033605401163040BDB",
+        "reference_id": "testing_id_123",
+        "type": "DYNAMIC",
+        "channel_code": "ID_DANA",
+        "expires_at": "2020-01-08T18:48:18.857Z",
+        "metadata": {
+            "branch_code": "senayan_372"
+        },
+        "payment_detail": {
+            "receipt_id": "000111666",
+            "source": "GOPAY"
+        }
+    }
+}
+
+
+Payment Session Completed
+{
+    "event": "payment_session.completed",
+    "business_id": "5781d19b2e2385880609791c",
+    "created": "2020-04-20T16:25:52Z",
+    "data": {
+        "id": "ps-579c8d61f23fa4ca35e52da4",
+        "allowed_payment_channels": [
+            "CARD",
+            "OVO",
+            "DANA"
+        ],
+        "amount": 100000,
+        "channel_properties": {
+            "cards": {
+                "bin_whitelist": [
+                    "411100",
+                    "51234567"
+                ],
+                "mid_label": "HALODOC_BNI_5999",
+                "cardonfile_type": "RECURRING"
+            }
+        },
+        "country": "ID",
+        "created": "2020-04-20T16:25:52Z",
+        "currency": "IDR",
+        "customer_id": "cust-e2878b4c-d57e-4a2c-922d-c0313c2800a3",
+        "description": "Example description of your payment session",
+        "expires_at": "2030-02-15T16:23:52Z",
+        "locale": "en",
+        "metadata": {
+            "your_metadata_key": "your_metadata_value"
+        },
+        "mode": "PAYMENT_LINK",
+        "payment_link_url": "https://checkout.xendit.co/latest/65c8b6916b68a555078489a5",
+        "payment_request_id": "pr-8363892-f4d9-421c-dhdy-jdh9e30380",
+        "payment_token_id": "ptkn-6d1c8be4-f4d9-421c-9f0b-ab3b2b6bbc39",
+        "reference_id": "test_session",
+        "success_return_url": "https://www.your-website.co/success_page",
+        "cancel_return_url": "https://www.your-website.co/cancel_page",
+        "session_type": "SAVE",
+        "status": "COMPLETED",
+        "updated": "2020-04-20T16:25:52Z"
+    }
+}
+
+Payment Session Expired
+
+{
+    "event": "payment_session.expired",
+    "business_id": "5781d19b2e2385880609791c",
+    "created": "2020-04-20T16:25:52Z",
+    "data": {
+        "id": "ps-579c8d61f23fa4ca35e52da4",
+        "allowed_payment_channels": [
+            "CARD",
+            "OVO",
+            "DANA"
+        ],
+        "amount": 100000,
+        "channel_properties": {
+            "cards": {
+                "bin_whitelist": [
+                    "411100",
+                    "51234567"
+                ],
+                "mid_label": "HALODOC_BNI_5999",
+                "cardonfile_type": "RECURRING"
+            }
+        },
+        "country": "ID",
+        "created": "2020-04-20T16:25:52Z",
+        "currency": "IDR",
+        "customer_id": "cust-e2878b4c-d57e-4a2c-922d-c0313c2800a3",
+        "description": "Example description of your payment session",
+        "expires_at": "2030-02-15T16:23:52Z",
+        "locale": "en",
+        "metadata": {
+            "your_metadata_key": "your_metadata_value"
+        },
+        "mode": "PAYMENT_LINK",
+        "payment_link_url": "https://checkout.xendit.co/latest/65c8b6916b68a555078489a5",
+        "payment_request_id": "pr-8363892-f4d9-421c-dhdy-jdh9e30380",
+        "payment_token_id": "ptkn-6d1c8be4-f4d9-421c-9f0b-ab3b2b6bbc39",
+        "reference_id": "test_session",
+        "success_return_url": "https://www.your-website.co/success_page",
+        "cancel_return_url": "https://www.your-website.co/cancel_page",
+        "session_type": "SAVE",
+        "status": "EXPIRED",
+        "updated": "2020-04-20T16:25:52Z"
+    }
+}

@@ -21,42 +21,42 @@ $action = $_POST['ajax_action'];
 try {
     switch ($action) {
         case 'verify_reference':
-    $reference = trim($_POST['reference']);
-    if (empty($reference)) {
-        throw new Exception('Reference number is required');
-    }
-    
-    $stmt = $conn->prepare("
-        SELECT s.*, p.plan_name, p.price, u.full_name, u.email, u.phone 
-        FROM subscriptions s
-        JOIN plans p ON s.plan_id = p.id
-        JOIN subscribers u ON s.user_id = u.id
-        WHERE s.reference = ?
-    ");
-    $stmt->bind_param("s", $reference);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows === 0) {
-        throw new Exception('Subscription not found with this reference');
-    }
-    
-    $subscription = $result->fetch_assoc();
-    $_SESSION['payment_flow'] = [
-        'reference' => $reference,
-        'subscription' => $subscription,
-        'step' => 2
-    ];
-    
-    $response['success'] = true;
-    $response['user'] = [
-        'name' => $subscription['full_name'],
-        'email' => $subscription['email'],
-        'phone' => $subscription['phone']
-    ];
-    $response['subscription'] = $subscription;
-    break;
+            $reference = trim($_POST['reference']);
+            if (empty($reference)) {
+                throw new Exception('Reference number is required');
+            }
             
+            $stmt = $conn->prepare("
+                SELECT s.*, p.plan_name, p.price, u.full_name, u.email, u.phone 
+                FROM subscriptions s
+                JOIN plans p ON s.plan_id = p.id
+                JOIN subscribers u ON s.user_id = u.id
+                WHERE s.reference = ?
+            ");
+            $stmt->bind_param("s", $reference);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows === 0) {
+                throw new Exception('Subscription not found with this reference');
+            }
+            
+            $subscription = $result->fetch_assoc();
+            $_SESSION['payment_flow'] = [
+                'reference' => $reference,
+                'subscription' => $subscription,
+                'step' => 2
+            ];
+            
+            $response['success'] = true;
+            $response['user'] = [
+                'name' => $subscription['full_name'],
+                'email' => $subscription['email'],
+                'phone' => $subscription['phone']
+            ];
+            $response['subscription'] = $subscription;
+            break;
+                    
         case 'send_verification':
             if (!isset($_SESSION['payment_flow'])) {
                 throw new Exception('Session expired. Please start again.');
@@ -162,63 +162,33 @@ try {
             $response['subscription'] = $_SESSION['payment_flow']['subscription'];
             break;
             
-        case 'process_payment':
-            if (!isset($_SESSION['payment_flow'])) {
-                throw new Exception('Session expired. Please start again.');
-            }
-            
-            $subscription = $_SESSION['payment_flow']['subscription'];
-            
-            // Process payment with Xendit
-            $xenditResponse = $this->processXenditPayment($subscription);
-            
-            if (!isset($xenditResponse['id'])) {
-                error_log("Xendit Error: " . json_encode($xenditResponse));
-                throw new Exception('Payment failed: ' . ($xenditResponse['message'] ?? 'Unknown error'));
-            }
-            
-            // Save transaction to database
-            $stmt = $conn->prepare("
-                INSERT INTO transactions (
-                    subscription_id, user_id, reference_number, payment_method, amount, 
-                    status, xendit_id, invoice_url, description, payer_email, currency,
-                    created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-            ");
-            
-            $paymentMethod = 'E-WALLET';
-            $status = 'PENDING';
-            
-            $stmt->bind_param(
-                "iissdssssss",
-                $subscription['id'],
-                $subscription['user_id'],
-                $subscription['reference'],
-                $paymentMethod,
-                $subscription['price'],
-                $status,
-                $xenditResponse['id'],
-                $xenditResponse['invoice_url'],
-                'Payment for ' . $subscription['plan_name'],
-                $subscription['email'],
-                'PHP'
-            );
-            
-            if (!$stmt->execute()) {
-                error_log("Database Error: " . $stmt->error);
-            }
-            
-            // Store payment ID in session for status checking
-            $_SESSION['payment_flow']['xendit_id'] = $xenditResponse['id'];
-            
-            $response['success'] = true;
-            $response['payment_url'] = $xenditResponse['invoice_url'];
-            $response['transaction_data'] = [
-                'reference' => $subscription['reference'],
-                'amount' => $subscription['price'],
-                'plan_name' => $subscription['plan_name']
-            ];
-            break;
+        // In the process_payment case of payment_ajax.php
+case 'process_payment':
+    if (!isset($_SESSION['payment_flow'])) {
+        throw new Exception('Session expired. Please start again.');
+    }
+    
+    $subscription = $_SESSION['payment_flow']['subscription'];
+    
+    // Process payment with Xendit - create invoice
+    $xenditResponse = processXenditInvoice($subscription);
+    
+    if (!isset($xenditResponse['invoice_url'])) {
+        error_log("Xendit Error: " . json_encode($xenditResponse));
+        throw new Exception('Payment failed: ' . ($xenditResponse['message'] ?? 'Unknown error'));
+    }
+    
+    // Store payment ID in session for status checking
+    $_SESSION['payment_flow']['xendit_id'] = $xenditResponse['id'];
+    
+    $response['success'] = true;
+    $response['payment_url'] = $xenditResponse['invoice_url'];
+    $response['transaction_data'] = [
+        'reference' => $subscription['reference'],
+        'amount' => $subscription['price'],
+        'plan_name' => $subscription['plan_name']
+    ];
+    break;
             
         case 'check_payment_status':
             if (!isset($_SESSION['payment_flow']['xendit_id'])) {
@@ -226,7 +196,7 @@ try {
             }
             
             $paymentId = $_SESSION['payment_flow']['xendit_id'];
-            $paymentStatus = $this->getXenditPaymentStatus($paymentId);
+            $paymentStatus = getXenditPaymentStatus($paymentId);
             
             $response['success'] = true;
             $response['status'] = $paymentStatus['status'];
