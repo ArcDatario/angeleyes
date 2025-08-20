@@ -1,5 +1,11 @@
 <?php
-// Xendit Payment Test Script
+// Xendit Payment Script with Complete Payment Method Capture
+
+// Include database connection
+require_once '../db.php';
+
+// Set timezone to GMT+8
+date_default_timezone_set('Asia/Manila');
 
 // Your Xendit API Key
 $apiKey = 'xnd_development_4D5fF5YYez3z4EG01BPr4wriMZjkGfy9gitazM6IccEwEbSfl6bv1dhTcF6Aha';
@@ -7,14 +13,18 @@ $apiKey = 'xnd_development_4D5fF5YYez3z4EG01BPr4wriMZjkGfy9gitazM6IccEwEbSfl6bv1
 // Xendit API endpoint for creating invoices
 $endpoint = 'https://api.xendit.co/v2/invoices';
 
+// Generate a unique external ID
+$externalId = 'invoice-' . time() . '-' . rand(1000, 9999);
+
 // Payment details
 $paymentData = [
-    'external_id' => 'test-invoice-' . time(), // Unique ID for the invoice
-    'amount' => 10, // Amount in IDR (100,000 IDR in this example)
+    'external_id' => $externalId,
+    'amount' => 1000,
+    'currency' => 'PHP',
     'payer_email' => 'arcjdatario@gmail.com',
     'description' => 'Test Payment Invoice',
-    'success_redirect_url' => 'https://yourwebsite.com/success', // Redirect after successful payment
-    'failure_redirect_url' => 'https://yourwebsite.com/failed'  // Redirect after failed payment
+    'success_redirect_url' => 'https://angeleyesolutions.online/success', 
+    'failure_redirect_url' => 'https://angeleyesolutions.online/failed',
 ];
 
 // Initialize cURL
@@ -23,7 +33,7 @@ $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $endpoint);
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     'Content-Type: application/json',
-    'Authorization: Basic ' . base64_encode($apiKey . ':') // Xendit uses Basic Auth with API key
+    'Authorization: Basic ' . base64_encode($apiKey . ':')
 ]);
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($paymentData));
@@ -39,16 +49,129 @@ if (curl_errno($ch)) {
     $responseData = json_decode($response, true);
     
     if (isset($responseData['invoice_url'])) {
-        // Redirect to the payment page
-        header('Location: ' . $responseData['invoice_url']);
-        exit();
+        // Check if invoice already exists to prevent duplicates
+        $invoiceId = $responseData['id'] ?? '';
+        $checkStmt = $conn->prepare("SELECT id FROM payments WHERE payment_id = ? OR external_id = ?");
+        $checkStmt->bind_param("ss", $invoiceId, $externalId);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            // Invoice already exists, redirect to existing URL
+            $existingInvoice = $result->fetch_assoc();
+            header('Location: ' . $responseData['invoice_url']);
+            exit();
+        }
+        $checkStmt->close();
+        
+        // Extract invoice data
+        $amount = $responseData['amount'] ?? 0;
+        $currency = $responseData['currency'] ?? 'PHP';
+        $status = $responseData['status'] ?? 'PENDING';
+        $payerEmail = $responseData['payer_email'] ?? '';
+        $description = $responseData['description'] ?? '';
+        $invoiceUrl = $responseData['invoice_url'] ?? '';
+        $expiryDate = $responseData['expiry_date'] ?? '';
+        
+        // Extract available payment methods
+        $availableMethods = [];
+        if (isset($responseData['available_banks'])) {
+            foreach ($responseData['available_banks'] as $bank) {
+                $availableMethods[] = [
+                    'type' => 'BANK',
+                    'name' => $bank['name'] ?? '',
+                    'channel_code' => $bank['bank_code'] ?? ''
+                ];
+            }
+        }
+        if (isset($responseData['available_ewallets'])) {
+            foreach ($responseData['available_ewallets'] as $ewallet) {
+                $availableMethods[] = [
+                    'type' => 'E-WALLET',
+                    'name' => $ewallet['name'] ?? '',
+                    'channel_code' => $ewallet['ewallet_type'] ?? ''
+                ];
+            }
+        }
+        if (isset($responseData['available_retail_outlets'])) {
+            foreach ($responseData['available_retail_outlets'] as $retail) {
+                $availableMethods[] = [
+                    'type' => 'RETAIL',
+                    'name' => $retail['name'] ?? '',
+                    'channel_code' => $retail['retail_outlet_name'] ?? ''
+                ];
+            }
+        }
+        if (isset($responseData['available_direct_debits'])) {
+            foreach ($responseData['available_direct_debits'] as $debit) {
+                $availableMethods[] = [
+                    'type' => 'DIRECT_DEBIT',
+                    'name' => $debit['name'] ?? '',
+                    'channel_code' => $debit['direct_debit_type'] ?? ''
+                ];
+            }
+        }
+        
+        $availableMethodsJson = json_encode($availableMethods);
+        
+        // Convert expiry date to GMT+8 format
+        $expiryDateFormatted = !empty($expiryDate) ? date('Y-m-d H:i:s', strtotime($expiryDate)) : null;
+        
+        // Prepare channel properties
+        $channelProperties = [
+            'invoice_url' => $invoiceUrl,
+            'expiry_date' => $expiryDateFormatted
+        ];
+        
+        // Get current time in GMT+8
+        $currentTimeGMT8 = date('Y-m-d H:i:s');
+        
+        // Insert invoice record
+        $stmt = $conn->prepare("
+            INSERT INTO payments (
+                event_type, payment_id, external_id, amount, currency, status,
+                payer_email, payer_country, description, channel_properties, 
+                available_payment_methods, created_time_gmt8, updated_time_gmt8
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $channelPropertiesJson = json_encode($channelProperties);
+        $eventType = 'invoice.created';
+        $payerCountry = 'PH';
+        
+        $stmt->bind_param(
+            "sssdsssssssss", 
+            $eventType, 
+            $invoiceId, 
+            $externalId, 
+            $amount, 
+            $currency,
+            $status,
+            $payerEmail, 
+            $payerCountry,
+            $description, 
+            $channelPropertiesJson,
+            $availableMethodsJson,
+            $currentTimeGMT8,
+            $currentTimeGMT8
+        );
+        
+        if ($stmt->execute()) {
+            // Redirect to the payment page
+            header('Location: ' . $invoiceUrl);
+            exit();
+        } else {
+            echo 'Error storing invoice data: ' . $conn->error;
+        }
+        
+        $stmt->close();
     } else {
-        // Display error if invoice creation failed
         echo 'Failed to create invoice. Response: ';
         print_r($responseData);
     }
 }
 
-// Close cURL
+// Close cURL and database connection
 curl_close($ch);
+$conn->close();
 ?>
