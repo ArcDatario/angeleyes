@@ -9,8 +9,8 @@ xYlH^ci~C5
 
 <?php
 $host = 'localhost';
-$db   = 'xendit_webhook.php'; // Change this to your database name
-$user = 'xendit_webhook.php';
+$db   = 'u182822994_angeleyes'; // Change this to your database name
+$user = 'u182822994_angeleyes';
 $pass = 'xYlH^ci~C5';
 $charset = 'utf8mb4';
 
@@ -25,3 +25,4 @@ if ($conn->connect_error) {
 // Set charset
 $conn->set_charset($charset);
 ?>
+

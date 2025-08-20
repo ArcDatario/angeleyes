@@ -1,5 +1,28 @@
 <?php
 session_start();
+
+// Handle Xendit redirects
+if (isset($_GET['success'])) {
+    // Payment was successful
+    $_SESSION['payment_success'] = true;
+    header('Location: payment.php');
+    exit;
+}
+
+if (isset($_GET['failed'])) {
+    // Payment failed
+    $_SESSION['payment_error'] = 'Payment failed. Please try again.';
+    header('Location: payment.php');
+    exit;
+}
+
+// Check for success/error messages
+$paymentSuccess = isset($_SESSION['payment_success']) ? $_SESSION['payment_success'] : false;
+$paymentError = isset($_SESSION['payment_error']) ? $_SESSION['payment_error'] : '';
+
+// Clear the messages after displaying
+unset($_SESSION['payment_success']);
+unset($_SESSION['payment_error']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -179,10 +202,20 @@ session_start();
             selectedPaymentMethod: "GCASH",
             subscriptionData: null,
 
-            init: function() {
-                this.setupPaymentMethodDropdown();
-                this.updateProgressBar();
-            },
+           // Add this to your PaymentHandler.init() function
+init: function() {
+    this.setupPaymentMethodDropdown();
+    this.updateProgressBar();
+    
+    // Show success/error messages from redirects
+    <?php if ($paymentSuccess): ?>
+    alert('Payment successful! Thank you for your payment.');
+    <?php endif; ?>
+    
+    <?php if (!empty($paymentError)): ?>
+    alert('<?php echo $paymentError; ?>');
+    <?php endif; ?>
+},
 
             updateProgressBar: function() {
                 const progressPercentage = ((this.currentStep - 1) / 4) * 100;

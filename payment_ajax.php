@@ -162,45 +162,58 @@ try {
             $response['subscription'] = $_SESSION['payment_flow']['subscription'];
             break;
             
-        // In the process_payment case of payment_ajax.php
-case 'process_payment':
-    if (!isset($_SESSION['payment_flow'])) {
-        throw new Exception('Session expired. Please start again.');
-    }
-    
-    $subscription = $_SESSION['payment_flow']['subscription'];
-    
-    // Process payment with Xendit - create invoice
-    $xenditResponse = processXenditInvoice($subscription);
-    
-    if (!isset($xenditResponse['invoice_url'])) {
-        error_log("Xendit Error: " . json_encode($xenditResponse));
-        throw new Exception('Payment failed: ' . ($xenditResponse['message'] ?? 'Unknown error'));
-    }
-    
-    // Store payment ID in session for status checking
-    $_SESSION['payment_flow']['xendit_id'] = $xenditResponse['id'];
-    
-    $response['success'] = true;
-    $response['payment_url'] = $xenditResponse['invoice_url'];
-    $response['transaction_data'] = [
-        'reference' => $subscription['reference'],
-        'amount' => $subscription['price'],
-        'plan_name' => $subscription['plan_name']
-    ];
-    break;
+        case 'process_payment':
+            if (!isset($_SESSION['payment_flow'])) {
+                throw new Exception('Session expired. Please start again.');
+            }
+            
+            $subscription = $_SESSION['payment_flow']['subscription'];
+            
+            // Process payment with Xendit - create invoice
+            $xenditResponse = processXenditInvoice($subscription);
+            
+            if (!isset($xenditResponse['invoice_url'])) {
+                error_log("Xendit Error: " . json_encode($xenditResponse));
+                throw new Exception('Payment failed: ' . ($xenditResponse['message'] ?? 'Unknown error'));
+            }
+            
+            // Store payment ID in session for status checking
+            $_SESSION['payment_flow']['xendit_id'] = $xenditResponse['id'];
+            $_SESSION['payment_flow']['xendit_invoice_id'] = $xenditResponse['id'];
+            
+            $response['success'] = true;
+            $response['payment_url'] = $xenditResponse['invoice_url'];
+            $response['transaction_data'] = [
+                'reference' => $subscription['reference'],
+                'amount' => $subscription['price'],
+                'plan_name' => $subscription['plan_name']
+            ];
+            break;
             
         case 'check_payment_status':
-            if (!isset($_SESSION['payment_flow']['xendit_id'])) {
+            if (!isset($_SESSION['payment_flow']['xendit_invoice_id'])) {
                 throw new Exception('No payment in progress');
             }
             
-            $paymentId = $_SESSION['payment_flow']['xendit_id'];
-            $paymentStatus = getXenditPaymentStatus($paymentId);
+            $invoiceId = $_SESSION['payment_flow']['xendit_invoice_id'];
+            $invoiceStatus = getXenditInvoiceStatus($invoiceId);
             
             $response['success'] = true;
-            $response['status'] = $paymentStatus['status'];
-            $response['paid'] = ($paymentStatus['status'] === 'PAID' || $paymentStatus['status'] === 'COMPLETED');
+            $response['status'] = $invoiceStatus['status'];
+            $response['paid'] = ($invoiceStatus['status'] === 'PAID');
+            
+            // If paid, update subscription
+            if ($response['paid'] && isset($_SESSION['payment_flow']['subscription'])) {
+                $subscription = $_SESSION['payment_flow']['subscription'];
+                $updateStmt = $conn->prepare("
+                    UPDATE subscriptions 
+                    SET status = 'active', payment_status = 'paid', last_payment_date = NOW() 
+                    WHERE reference = ?
+                ");
+                $updateStmt->bind_param("s", $subscription['reference']);
+                $updateStmt->execute();
+                $updateStmt->close();
+            }
             break;
             
         default:
@@ -213,22 +226,19 @@ case 'process_payment':
 
 echo json_encode($response);
 
-// Create invoice via Xendit (v2 invoices). Returns decoded JSON array or throws Exception.
-function processXenditPayment($subscription, $paymentMethod = null) {
+// Create invoice via Xendit (v2 invoices)
+function processXenditInvoice($subscription) {
     $xenditApiKey = 'xnd_development_4D5fF5YYez3z4EG01BPr4wriMZjkGfy9gitazM6IccEwEbSfl6bv1dhTcF6Aha';
 
     $payload = [
-        'external_id' => $subscription['reference'] ?? uniqid('ext_'),
-        'amount' => (float)($subscription['price'] ?? 0),
-        'payer_email' => $subscription['email'] ?? null,
-        'description' => 'Payment for ' . ($subscription['plan_name'] ?? 'subscription'),
-        'success_redirect_url' => 'https://yourdomain.com/payment/success',
-        'failure_redirect_url' => 'https://yourdomain.com/payment/failed'
+        'external_id' => $subscription['reference'],
+        'amount' => (float)$subscription['price'],
+        'payer_email' => $subscription['email'],
+        'description' => 'Payment for ' . $subscription['plan_name'],
+        'success_redirect_url' => 'https://angeleyesolutions.online/payment.php?success=true',
+        'failure_redirect_url' => 'https://angeleyesolutions.online/payment.php?failed=true',
+        'currency' => 'PHP'
     ];
-
-    if (!empty($paymentMethod)) {
-        $payload['payment_methods'] = [$paymentMethod];
-    }
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'https://api.xendit.co/v2/invoices');
@@ -244,7 +254,8 @@ function processXenditPayment($subscription, $paymentMethod = null) {
     curl_close($ch);
 
     if ($httpCode < 200 || $httpCode >= 300) {
-        throw new Exception('Xendit API returned HTTP ' . $httpCode . ' - ' . substr($response, 0, 512));
+        error_log("Xendit API Error: HTTP $httpCode - $response");
+        throw new Exception('Xendit API returned HTTP ' . $httpCode);
     }
 
     $decoded = json_decode($response, true);
@@ -255,10 +266,10 @@ function processXenditPayment($subscription, $paymentMethod = null) {
     return $decoded;
 }
 
-// Fetch payment/invoice status from Xendit. Accepts a payment/invoice id and returns decoded JSON.
-function getXenditPaymentStatus($id, $isPayment = false) {
+// Fetch invoice status from Xendit
+function getXenditInvoiceStatus($invoiceId) {
     $xenditApiKey = 'xnd_development_4D5fF5YYez3z4EG01BPr4wriMZjkGfy9gitazM6IccEwEbSfl6bv1dhTcF6Aha';
-    $url = $isPayment ? 'https://api.xendit.co/v3/payments/' . $id : 'https://api.xendit.co/v2/invoices/' . $id;
+    $url = 'https://api.xendit.co/v2/invoices/' . $invoiceId;
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -272,7 +283,7 @@ function getXenditPaymentStatus($id, $isPayment = false) {
     curl_close($ch);
 
     if ($httpCode < 200 || $httpCode >= 300) {
-        throw new Exception('Xendit status check returned HTTP ' . $httpCode . ' - ' . substr($response, 0, 512));
+        throw new Exception('Xendit status check returned HTTP ' . $httpCode);
     }
 
     $decoded = json_decode($response, true);
