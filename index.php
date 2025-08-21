@@ -42,10 +42,10 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="angeleyes-logo.png">
-    <link rel="stylesheet" href="assets/styles/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 
-    <link rel="stylesheet" href="assets/styles/light-modal.css">
-    <link rel="stylesheet" href="assets/styles/gallery.css">
+    <link rel="stylesheet" href="assets/css/light-modal.css">
+    <link rel="stylesheet" href="assets/css/gallery.css">
     <style>
         :root {
             --primary: 
@@ -67,7 +67,7 @@ try {
     margin-left:20%;
 }
 .logo img {
-    height: 40px; /* Adjust as needed */
+    height: 50px; /* Adjust as needed */
     width: auto;
     transition: all 0.3s ease;
 }
@@ -305,34 +305,37 @@ try {
     <!-- Footer -->
       <?php include "includes/footer.php";?>
     
-    <!-- Modal Overlay and Modal -->
+  <!-- Modal Overlay and Modal -->
 <div class="modal-overlay" id="lightModalOverlay">
     <div class="light-modal" id="lightModal">
-      <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
-      <div class="modal-image-container">
-        <button class="modal-nav-btn left" id="modalPrevBtn" aria-label="Previous">&#8592;</button>
-        <img id="modalImage" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Modal Image" />
-        <button class="modal-nav-btn right" id="modalNextBtn" aria-label="Next">&#8594;</button>
-      </div>
-      <div class="modal-actions">
-        <button class="apply-btn">Apply Now</button>
-        <button class="pay-btn">Pay Online</button>
-
-        <script>
+        <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
+        <div class="modal-image-container">
+           
             
-// Ensure the DOM is loaded before attaching the event
-document.addEventListener('DOMContentLoaded', function() {
-    const payBtn = document.querySelector('.pay-btn');
-    if (payBtn) {
-        payBtn.addEventListener('click', function() {
-            window.open('payment.php', '_blank');
-        });
-    }
-});
-        </script>
-      </div>
+            <!-- Your images are displayed here -->
+            <img class="modal-image active" src="images/modal-images/1.png" alt="Modal Image 1">
+            <img class="modal-image" src="images/modal-images/2.png" alt="Modal Image 2">
+            <img class="modal-image" src="images/modal-images/3.png" alt="Modal Image 3">
+            <img class="modal-image" src="images/modal-images/4.png" alt="Modal Image 4">
+            <img class="modal-image" src="images/modal-images/5.png" alt="Modal Image 5">
+            <img class="modal-image" src="images/modal-images/6.png" alt="Modal Image 6">
+            
+            
+        </div>
+        <div class="image-indicators" id="imageIndicators">
+            <div class="indicator active" data-index="0"></div>
+            <div class="indicator" data-index="1"></div>
+            <div class="indicator" data-index="2"></div>
+            <div class="indicator" data-index="3"></div>
+            <div class="indicator" data-index="4"></div>
+            <div class="indicator" data-index="5"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="apply-btn">Apply Now</button>
+            <button class="pay-btn">Pay Online</button>
+        </div>
     </div>
-  </div>
+</div>
 
 <script src="scripts/light-modal.js"></script>
 
@@ -382,7 +385,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<script src="assets/js/plan.js"></script>
+
 <script src="assets/js/gallery.js"></script>
 </body>
 </html>
