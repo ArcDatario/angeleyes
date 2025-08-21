@@ -68,73 +68,68 @@ try {
     $existingPayment = $result->fetch_assoc();
     $checkStmt->close();
     
-    // If it's an invoice.created event, we don't create a record here
+    // If it's an invoice.created event, delete any previous records and create a new one
     if ($eventType === 'invoice.created') {
-        http_response_code(200);
-        echo 'Invoice created event received (no action taken)';
-        exit();
-    }
-    
-    // Only create/update records for actual payment events, not invoice creation
-    $paymentEvents = [
-        'payment.succeeded',
-        'payment.failed',
-        'payment.awaiting_capture',
-        'capture.succeeded',
-        'capture.failed',
-        'invoice.paid',
-        'invoice.expired'
-    ];
-    
-    if (!in_array($eventType, $paymentEvents)) {
-        http_response_code(200);
-        echo 'Event type does not require database action';
-        exit();
-    }
-    
-    // If no existing payment found, create one for payment events
-    if (!$existingPayment) {
-        // Extract payment information
+        // Delete any previous records with the same payment_id or external_id
+        $deleteStmt = $conn->prepare("DELETE FROM payments WHERE payment_id = ? OR external_id = ?");
+        $deleteStmt->bind_param("ss", $identifier, $identifier);
+        $deleteStmt->execute();
+        $deleteStmt->close();
+        
+        // Extract payment information for new record
         $paymentId = $paymentData['id'] ?? '';
-        $externalId = $paymentData['reference_id'] ?? $paymentData['external_id'] ?? '';
-        $amount = $paymentData['amount'] ?? $paymentData['captured_amount'] ?? 0;
+        $externalId = $paymentData['external_id'] ?? '';
+        $amount = $paymentData['amount'] ?? 0;
         $currency = $paymentData['currency'] ?? 'PHP';
-        $status = $paymentData['status'] ?? '';
+        $status = 'PENDING';
         $payerEmail = $paymentData['payer_email'] ?? '';
         $description = $paymentData['description'] ?? '';
+        $invoiceUrl = $paymentData['invoice_url'] ?? '';
         
         // Get current time in GMT+8
         $currentTimeGMT8 = date('Y-m-d H:i:s');
         
-        // Insert a new payment record
+        // Insert new record
         $insertStmt = $conn->prepare("
             INSERT INTO payments (
                 event_type, payment_id, external_id, amount, currency, status,
-                payer_email, description, created_time_gmt8, updated_time_gmt8
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                payer_email, payer_country, description, created_time_gmt8, updated_time_gmt8
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         
+        $payerCountry = 'PH';
+        
         $insertStmt->bind_param(
-            "sssdssssss", 
+            "sssdsssssss", 
             $eventType, 
             $paymentId, 
             $externalId, 
             $amount, 
             $currency,
             $status,
-            $payerEmail,
+            $payerEmail, 
+            $payerCountry,
             $description,
             $currentTimeGMT8,
             $currentTimeGMT8
         );
         
         if ($insertStmt->execute()) {
-            $existingPayment = ['id' => $insertStmt->insert_id, 'payment_id' => $paymentId, 'external_id' => $externalId];
+            http_response_code(200);
+            echo 'Invoice created successfully';
         } else {
-            throw new Exception("Failed to create payment record: " . $conn->error);
+            throw new Exception('Error creating invoice: ' . $conn->error);
         }
         
         $insertStmt->close();
+        exit();
+    }
+    
+    // If no existing payment found for other events, just return
+    if (!$existingPayment) {
+        http_response_code(200);
+        echo 'No existing payment found for update';
+        exit();
     }
     
     // Extract payment information for update
@@ -332,7 +327,7 @@ try {
     // Update existing payment
     $stmt = $conn->prepare("
         UPDATE payments 
-        SET event_type = ?, payment_id = ?, payment_request_id = ?, status = ?, amount = ?, authorized_amount = ?, captured_amount = ?, 
+        SET event_type = ?, payment_request_id = ?, status = ?, amount = ?, authorized_amount = ?, captured_amount = ?, 
             currency = ?, failure_code = ?, failure_message = ?, payment_method_type = ?, payment_method = ?, 
             payment_method_id = ?, channel_code = ?, channel_name = ?, reusability = ?, method_status = ?,
             card_token_id = ?, masked_card_number = ?, cardholder_name = ?, expiry_month = ?, expiry_year = ?,
@@ -340,14 +335,13 @@ try {
             three_d_secure_flow = ?, eci_code = ?, three_d_secure_result = ?, three_d_secure_version = ?,
             cvv_result = ?, address_verification_result = ?, account_details = ?, payer_email = ?, 
             payer_country = ?, description = ?, metadata = ?, channel_properties = ?, payment_detail = ?, 
-            created_time_gmt8 = ?, updated_time_gmt8 = ?, settlement_status = ?, settlement_time_gmt8 = ?, business_id = ?
+            updated_time_gmt8 = ?, settlement_status = ?, settlement_time_gmt8 = ?, business_id = ?
         WHERE id = ?
     ");
     
     $stmt->bind_param(
-        "ssssdddsdsssssssssssssssssssssssssssssssssssssssi", 
+        "sssdddsdssssssssssssssssssssssssssssssssssssi", 
         $eventType, 
-        $paymentId,
         $paymentRequestId,
         $status, 
         $amount,
@@ -386,7 +380,6 @@ try {
         $metadata, 
         $channelProperties, 
         $paymentDetail, 
-        $createdTime,
         $updatedTime,
         $settlementStatus,
         $settlementTime,

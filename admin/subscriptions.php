@@ -257,23 +257,21 @@ $(document).ready(function() {
         focus: false
     });
 
-    // Initialize date pickers
-    const startDatePicker = flatpickr('#started_date', {
-        dateFormat: "M j, Y",
-        minDate: "today",
-        onChange: function(selectedDates, dateStr, instance) {
-            if (selectedDates.length > 0) {
-                const dueDate = new Date(selectedDates[0]);
-                dueDate.setMonth(dueDate.getMonth() + 1);
-                dueDatePicker.setDate(dueDate);
-            }
+    // Initialize date pickers - REMOVED minDate constraint
+const startDatePicker = flatpickr('#started_date', {
+    dateFormat: "M j, Y",
+    onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length > 0) {
+            const dueDate = new Date(selectedDates[0]);
+            dueDate.setMonth(dueDate.getMonth() + 1);
+            dueDatePicker.setDate(dueDate);
         }
-    });
+    }
+});
 
-    const dueDatePicker = flatpickr('#due_date', {
-        dateFormat: "M j, Y",
-        minDate: "today"
-    });
+const dueDatePicker = flatpickr('#due_date', {
+    dateFormat: "M j, Y"
+});
 
     // Load subscriptions on page load
     loadSubscriptions();

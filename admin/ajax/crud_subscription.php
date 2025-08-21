@@ -5,6 +5,35 @@ require_once '../../db.php';
 
 $response = ['success' => false, 'message' => ''];
 
+/**
+ * Normalize a user-supplied date string into MySQL 'Y-m-d' format.
+ * Accepts a few common formats and falls back to strtotime.
+ * Returns formatted date string on success, false on invalid input.
+ */
+function normalize_date($dateStr)
+{
+    $dateStr = trim((string)$dateStr);
+    if ($dateStr === '') {
+        return false;
+    }
+
+    $formats = ['Y-m-d', 'm/d/Y', 'd/m/Y', 'd-m-Y', 'm-d-Y', 'Y/m/d'];
+    foreach ($formats as $fmt) {
+        $d = DateTime::createFromFormat($fmt, $dateStr);
+        if ($d && $d->format($fmt) === $dateStr) {
+            return $d->format('Y-m-d');
+        }
+    }
+
+    // Try a generic parse as last resort
+    $ts = strtotime($dateStr);
+    if ($ts !== false) {
+        return date('Y-m-d', $ts);
+    }
+
+    return false;
+}
+
 try {
     $action = $_POST['action'] ?? '';
 
@@ -15,12 +44,16 @@ try {
         $plan_id = (int)$_POST['plan_id'];
         $reference = trim($_POST['reference']);
         $address = trim($_POST['address']);
-        $started_date = $_POST['started_date'];
-        $due_date = $_POST['due_date'];
+    $started_date_raw = $_POST['started_date'] ?? '';
+    $due_date_raw = $_POST['due_date'] ?? '';
         $status = $_POST['status'] ?? 'Active';
 
-        if (empty($user_id) || empty($plan_id) || empty($address) || empty($started_date) || empty($due_date)) {
-            throw new Exception('All fields are required');
+        // Normalize dates and validate
+        $started_date = normalize_date($started_date_raw);
+        $due_date = normalize_date($due_date_raw);
+
+        if (empty($user_id) || empty($plan_id) || empty($address) || !$started_date || !$due_date) {
+            throw new Exception('All fields are required and dates must be valid (e.g. YYYY-MM-DD or MM/DD/YYYY)');
         }
 
         if ($id > 0) { // Update
