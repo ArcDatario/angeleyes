@@ -68,14 +68,76 @@ try {
     $existingPayment = $result->fetch_assoc();
     $checkStmt->close();
     
-    // If it's an invoice.created event and we already have a record, skip creating a new one
-    if ($eventType === 'invoice.created' && $existingPayment) {
+    // If it's an invoice.created event, we don't create a record here
+    if ($eventType === 'invoice.created') {
         http_response_code(200);
-        echo 'Invoice already exists, skipping creation';
+        echo 'Invoice created event received (no action taken)';
         exit();
     }
     
-    // Extract payment information
+    // Only create/update records for actual payment events, not invoice creation
+    $paymentEvents = [
+        'payment.succeeded',
+        'payment.failed',
+        'payment.awaiting_capture',
+        'capture.succeeded',
+        'capture.failed',
+        'invoice.paid',
+        'invoice.expired'
+    ];
+    
+    if (!in_array($eventType, $paymentEvents)) {
+        http_response_code(200);
+        echo 'Event type does not require database action';
+        exit();
+    }
+    
+    // If no existing payment found, create one for payment events
+    if (!$existingPayment) {
+        // Extract payment information
+        $paymentId = $paymentData['id'] ?? '';
+        $externalId = $paymentData['reference_id'] ?? $paymentData['external_id'] ?? '';
+        $amount = $paymentData['amount'] ?? $paymentData['captured_amount'] ?? 0;
+        $currency = $paymentData['currency'] ?? 'PHP';
+        $status = $paymentData['status'] ?? '';
+        $payerEmail = $paymentData['payer_email'] ?? '';
+        $description = $paymentData['description'] ?? '';
+        
+        // Get current time in GMT+8
+        $currentTimeGMT8 = date('Y-m-d H:i:s');
+        
+        // Insert a new payment record
+        $insertStmt = $conn->prepare("
+            INSERT INTO payments (
+                event_type, payment_id, external_id, amount, currency, status,
+                payer_email, description, created_time_gmt8, updated_time_gmt8
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $insertStmt->bind_param(
+            "sssdssssss", 
+            $eventType, 
+            $paymentId, 
+            $externalId, 
+            $amount, 
+            $currency,
+            $status,
+            $payerEmail,
+            $description,
+            $currentTimeGMT8,
+            $currentTimeGMT8
+        );
+        
+        if ($insertStmt->execute()) {
+            $existingPayment = ['id' => $insertStmt->insert_id, 'payment_id' => $paymentId, 'external_id' => $externalId];
+        } else {
+            throw new Exception("Failed to create payment record: " . $conn->error);
+        }
+        
+        $insertStmt->close();
+    }
+    
+    // Extract payment information for update
     $paymentId = $paymentData['id'] ?? ($existingPayment['payment_id'] ?? '');
     $paymentRequestId = $paymentData['payment_request_id'] ?? '';
     $externalId = $paymentData['reference_id'] ?? $paymentData['external_id'] ?? ($existingPayment['external_id'] ?? '');
@@ -267,144 +329,73 @@ try {
     // Business ID
     $businessId = $data['business_id'] ?? '';
     
-    if ($existingPayment) {
-        // Update existing payment
-        $stmt = $conn->prepare("
-            UPDATE payments 
-            SET event_type = ?, payment_request_id = ?, status = ?, amount = ?, authorized_amount = ?, captured_amount = ?, 
-                currency = ?, failure_code = ?, failure_message = ?, payment_method_type = ?, payment_method = ?, 
-                payment_method_id = ?, channel_code = ?, channel_name = ?, reusability = ?, method_status = ?,
-                card_token_id = ?, masked_card_number = ?, cardholder_name = ?, expiry_month = ?, expiry_year = ?,
-                card_type = ?, card_network = ?, card_country = ?, card_issuer = ?, card_fingerprint = ?,
-                three_d_secure_flow = ?, eci_code = ?, three_d_secure_result = ?, three_d_secure_version = ?,
-                cvv_result = ?, address_verification_result = ?, account_details = ?, payer_email = ?, 
-                payer_country = ?, description = ?, metadata = ?, channel_properties = ?, payment_detail = ?, 
-                updated_time_gmt8 = ?, settlement_status = ?, settlement_time_gmt8 = ?, business_id = ?
-            WHERE id = ?
-        ");
-        
-        $stmt->bind_param(
-            "sssdddsdssssssssssssssssssssssssssssssssssssi", 
-            $eventType, 
-            $paymentRequestId,
-            $status, 
-            $amount,
-            $authorizedAmount,
-            $capturedAmount,
-            $currency,
-            $failureCode,
-            $failureMessage,
-            $paymentMethodType,
-            $paymentMethod,
-            $paymentMethodId,
-            $channelCode,
-            $channelName,
-            $reusability,
-            $methodStatus,
-            $cardTokenId,
-            $maskedCardNumber,
-            $cardholderName,
-            $expiryMonth,
-            $expiryYear,
-            $cardType,
-            $cardNetwork,
-            $cardCountry,
-            $cardIssuer,
-            $cardFingerprint,
-            $threeDSecureFlow,
-            $eciCode,
-            $threeDSecureResult,
-            $threeDSecureVersion,
-            $cvvResult,
-            $addressVerificationResult,
-            $accountDetails,
-            $payerEmail,
-            $payerCountry,
-            $description,
-            $metadata, 
-            $channelProperties, 
-            $paymentDetail, 
-            $updatedTime,
-            $settlementStatus,
-            $settlementTime,
-            $businessId,
-            $existingPayment['id']
-        );
-        
-        $stmt->execute();
-        $stmt->close();
-    } else {
-        // Only insert new payment if it's not an invoice.created event (which should be handled by xendit.php)
-        if ($eventType !== 'invoice.created') {
-            // Insert new payment
-            $stmt = $conn->prepare("
-                INSERT INTO payments (
-                    event_type, payment_id, payment_request_id, external_id, amount, authorized_amount, captured_amount, 
-                    currency, status, failure_code, failure_message, payment_method_type, payment_method, payment_method_id, 
-                    channel_code, channel_name, reusability, method_status, card_token_id, masked_card_number, 
-                    cardholder_name, expiry_month, expiry_year, card_type, card_network, card_country, card_issuer, 
-                    card_fingerprint, three_d_secure_flow, eci_code, three_d_secure_result, three_d_secure_version, 
-                    cvv_result, address_verification_result, account_details, reference_id, payer_email, payer_country, 
-                    description, metadata, channel_properties, payment_detail, created_time_gmt8, updated_time_gmt8, 
-                    settlement_status, settlement_time_gmt8, business_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ");
-            
-            $stmt->bind_param(
-                "ssssddddssdssssssssssssssssssssssssssssssssssssss", 
-                $eventType, 
-                $paymentId,
-                $paymentRequestId,
-                $externalId, 
-                $amount,
-                $authorizedAmount,
-                $capturedAmount,
-                $currency, 
-                $status,
-                $failureCode,
-                $failureMessage,
-                $paymentMethodType,
-                $paymentMethod,
-                $paymentMethodId,
-                $channelCode,
-                $channelName,
-                $reusability,
-                $methodStatus,
-                $cardTokenId,
-                $maskedCardNumber,
-                $cardholderName,
-                $expiryMonth,
-                $expiryYear,
-                $cardType,
-                $cardNetwork,
-                $cardCountry,
-                $cardIssuer,
-                $cardFingerprint,
-                $threeDSecureFlow,
-                $eciCode,
-                $threeDSecureResult,
-                $threeDSecureVersion,
-                $cvvResult,
-                $addressVerificationResult,
-                $accountDetails,
-                $referenceId,
-                $payerEmail,
-                $payerCountry,
-                $description, 
-                $metadata, 
-                $channelProperties, 
-                $paymentDetail,
-                $createdTime,
-                $updatedTime,
-                $settlementStatus,
-                $settlementTime,
-                $businessId
-            );
-            
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
+    // Update existing payment
+    $stmt = $conn->prepare("
+        UPDATE payments 
+        SET event_type = ?, payment_id = ?, payment_request_id = ?, status = ?, amount = ?, authorized_amount = ?, captured_amount = ?, 
+            currency = ?, failure_code = ?, failure_message = ?, payment_method_type = ?, payment_method = ?, 
+            payment_method_id = ?, channel_code = ?, channel_name = ?, reusability = ?, method_status = ?,
+            card_token_id = ?, masked_card_number = ?, cardholder_name = ?, expiry_month = ?, expiry_year = ?,
+            card_type = ?, card_network = ?, card_country = ?, card_issuer = ?, card_fingerprint = ?,
+            three_d_secure_flow = ?, eci_code = ?, three_d_secure_result = ?, three_d_secure_version = ?,
+            cvv_result = ?, address_verification_result = ?, account_details = ?, payer_email = ?, 
+            payer_country = ?, description = ?, metadata = ?, channel_properties = ?, payment_detail = ?, 
+            created_time_gmt8 = ?, updated_time_gmt8 = ?, settlement_status = ?, settlement_time_gmt8 = ?, business_id = ?
+        WHERE id = ?
+    ");
+    
+    $stmt->bind_param(
+        "ssssdddsdsssssssssssssssssssssssssssssssssssssssi", 
+        $eventType, 
+        $paymentId,
+        $paymentRequestId,
+        $status, 
+        $amount,
+        $authorizedAmount,
+        $capturedAmount,
+        $currency,
+        $failureCode,
+        $failureMessage,
+        $paymentMethodType,
+        $paymentMethod,
+        $paymentMethodId,
+        $channelCode,
+        $channelName,
+        $reusability,
+        $methodStatus,
+        $cardTokenId,
+        $maskedCardNumber,
+        $cardholderName,
+        $expiryMonth,
+        $expiryYear,
+        $cardType,
+        $cardNetwork,
+        $cardCountry,
+        $cardIssuer,
+        $cardFingerprint,
+        $threeDSecureFlow,
+        $eciCode,
+        $threeDSecureResult,
+        $threeDSecureVersion,
+        $cvvResult,
+        $addressVerificationResult,
+        $accountDetails,
+        $payerEmail,
+        $payerCountry,
+        $description,
+        $metadata, 
+        $channelProperties, 
+        $paymentDetail, 
+        $createdTime,
+        $updatedTime,
+        $settlementStatus,
+        $settlementTime,
+        $businessId,
+        $existingPayment['id']
+    );
+    
+    $stmt->execute();
+    $stmt->close();
     
     // Success response
     http_response_code(200);

@@ -6,10 +6,9 @@ xYlH^ci~C5
 
 
 
-
 <?php
 $host = 'localhost';
-$db   = 'u182822994_angeleyes'; // Change this to your database name
+$db   = 'u182822994_angeleyes'; 
 $user = 'u182822994_angeleyes';
 $pass = 'xYlH^ci~C5';
 $charset = 'utf8mb4';

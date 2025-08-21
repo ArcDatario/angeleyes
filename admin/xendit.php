@@ -1,5 +1,5 @@
 <?php
-// Xendit Payment Script with Complete Payment Method Capture
+// Xendit Payment Script - Only creates invoice, doesn't insert record
 
 // Include database connection
 require_once '../db.php';
@@ -23,8 +23,8 @@ $paymentData = [
     'currency' => 'PHP',
     'payer_email' => 'arcjdatario@gmail.com',
     'description' => 'Test Payment Invoice',
-    'success_redirect_url' => 'https://angeleyesolutions.online/success', 
-    'failure_redirect_url' => 'https://angeleyesolutions.online/failed',
+    'success_redirect_url' => 'https://angeleyesolutions.online/success.php?external_id=' . $externalId, 
+    'failure_redirect_url' => 'https://angeleyesolutions.online/failed.php',
 ];
 
 // Initialize cURL
@@ -49,122 +49,9 @@ if (curl_errno($ch)) {
     $responseData = json_decode($response, true);
     
     if (isset($responseData['invoice_url'])) {
-        // Check if invoice already exists to prevent duplicates
-        $invoiceId = $responseData['id'] ?? '';
-        $checkStmt = $conn->prepare("SELECT id FROM payments WHERE payment_id = ? OR external_id = ?");
-        $checkStmt->bind_param("ss", $invoiceId, $externalId);
-        $checkStmt->execute();
-        $result = $checkStmt->get_result();
-        
-        if ($result->num_rows > 0) {
-            // Invoice already exists, redirect to existing URL
-            $existingInvoice = $result->fetch_assoc();
-            header('Location: ' . $responseData['invoice_url']);
-            exit();
-        }
-        $checkStmt->close();
-        
-        // Extract invoice data
-        $amount = $responseData['amount'] ?? 0;
-        $currency = $responseData['currency'] ?? 'PHP';
-        $status = $responseData['status'] ?? 'PENDING';
-        $payerEmail = $responseData['payer_email'] ?? '';
-        $description = $responseData['description'] ?? '';
-        $invoiceUrl = $responseData['invoice_url'] ?? '';
-        $expiryDate = $responseData['expiry_date'] ?? '';
-        
-        // Extract available payment methods
-        $availableMethods = [];
-        if (isset($responseData['available_banks'])) {
-            foreach ($responseData['available_banks'] as $bank) {
-                $availableMethods[] = [
-                    'type' => 'BANK',
-                    'name' => $bank['name'] ?? '',
-                    'channel_code' => $bank['bank_code'] ?? ''
-                ];
-            }
-        }
-        if (isset($responseData['available_ewallets'])) {
-            foreach ($responseData['available_ewallets'] as $ewallet) {
-                $availableMethods[] = [
-                    'type' => 'E-WALLET',
-                    'name' => $ewallet['name'] ?? '',
-                    'channel_code' => $ewallet['ewallet_type'] ?? ''
-                ];
-            }
-        }
-        if (isset($responseData['available_retail_outlets'])) {
-            foreach ($responseData['available_retail_outlets'] as $retail) {
-                $availableMethods[] = [
-                    'type' => 'RETAIL',
-                    'name' => $retail['name'] ?? '',
-                    'channel_code' => $retail['retail_outlet_name'] ?? ''
-                ];
-            }
-        }
-        if (isset($responseData['available_direct_debits'])) {
-            foreach ($responseData['available_direct_debits'] as $debit) {
-                $availableMethods[] = [
-                    'type' => 'DIRECT_DEBIT',
-                    'name' => $debit['name'] ?? '',
-                    'channel_code' => $debit['direct_debit_type'] ?? ''
-                ];
-            }
-        }
-        
-        $availableMethodsJson = json_encode($availableMethods);
-        
-        // Convert expiry date to GMT+8 format
-        $expiryDateFormatted = !empty($expiryDate) ? date('Y-m-d H:i:s', strtotime($expiryDate)) : null;
-        
-        // Prepare channel properties
-        $channelProperties = [
-            'invoice_url' => $invoiceUrl,
-            'expiry_date' => $expiryDateFormatted
-        ];
-        
-        // Get current time in GMT+8
-        $currentTimeGMT8 = date('Y-m-d H:i:s');
-        
-        // Insert invoice record
-        $stmt = $conn->prepare("
-            INSERT INTO payments (
-                event_type, payment_id, external_id, amount, currency, status,
-                payer_email, payer_country, description, channel_properties, 
-                available_payment_methods, created_time_gmt8, updated_time_gmt8
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        
-        $channelPropertiesJson = json_encode($channelProperties);
-        $eventType = 'invoice.created';
-        $payerCountry = 'PH';
-        
-        $stmt->bind_param(
-            "sssdsssssssss", 
-            $eventType, 
-            $invoiceId, 
-            $externalId, 
-            $amount, 
-            $currency,
-            $status,
-            $payerEmail, 
-            $payerCountry,
-            $description, 
-            $channelPropertiesJson,
-            $availableMethodsJson,
-            $currentTimeGMT8,
-            $currentTimeGMT8
-        );
-        
-        if ($stmt->execute()) {
-            // Redirect to the payment page
-            header('Location: ' . $invoiceUrl);
-            exit();
-        } else {
-            echo 'Error storing invoice data: ' . $conn->error;
-        }
-        
-        $stmt->close();
+        // Redirect to the payment page - NO DATABASE INSERTION HERE
+        header('Location: ' . $responseData['invoice_url']);
+        exit();
     } else {
         echo 'Failed to create invoice. Response: ';
         print_r($responseData);
