@@ -29,36 +29,28 @@ $(function () {
         $(this).addClass("in");
       }
     });
-  
+
     element.addClass("active");
-    // Ensure Subscribers link is active also when on related subscriptions pages
-    try {
-      var pathLower = path.toLowerCase();
-      if (pathLower.indexOf('subscription') !== -1) {
-        var subEl = $("ul#sidebarnav a").filter(function () {
-          var href = $(this).attr('href') || '';
-          return href.toLowerCase().indexOf('subscriber') !== -1;
-        });
-        if (subEl && subEl.length) {
-          subEl.each(function () {
-            $(this).addClass('active');
-            $(this).parentsUntil('.sidebar-nav').each(function (index) {
-              if ($(this).is('li') && $(this).children('a').length !== 0) {
-                $(this).children('a').addClass('active');
-                $(this).parent('ul#sidebarnav').length === 0
-                  ? $(this).addClass('active')
-                  : $(this).addClass('selected');
-              } else if (!$(this).is('ul') && $(this).children('a').length === 0) {
-                $(this).addClass('selected');
-              } else if ($(this).is('ul')) {
-                $(this).addClass('in');
-              }
-            });
-          });
+    // Subscribers tab should also be active for both subscribers and subscriptions pages (but not subscriptions-list)
+    var pathname = window.location.pathname.toLowerCase();
+    if (
+      pathname.indexOf('subscribers') !== -1 ||
+      (pathname.indexOf('subscriptions') !== -1 && pathname.indexOf('subscriptions-list') === -1)
+    ) {
+      var subscribersMenu = $("ul#sidebarnav a[href$='subscribers']");
+      subscribersMenu.addClass('active');
+      subscribersMenu.parentsUntil('.sidebar-nav').each(function () {
+        if ($(this).is('li') && $(this).children('a').length !== 0) {
+          $(this).children('a').addClass('active');
+          $(this).parent('ul#sidebarnav').length === 0
+            ? $(this).addClass('active')
+            : $(this).addClass('selected');
+        } else if (!$(this).is('ul') && $(this).children('a').length === 0) {
+          $(this).addClass('selected');
+        } else if ($(this).is('ul')) {
+          $(this).addClass('in');
         }
-      }
-    } catch (e) {
-      // ignore
+      });
     }
     $("#sidebarnav a").on("click", function (e) {
       if (!$(this).hasClass("active")) {

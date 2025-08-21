@@ -4,6 +4,8 @@ require_once '../db.php';
 
 // Get subscriber ID from query parameter
 $subscriber_id = $_GET['id'] ?? 0;
+// Manila now (server) in ISO format for client-side comparisons
+$manilaNowIso = (new DateTime('now', new DateTimeZone('Asia/Manila')))->format('Y-m-d\TH:i:s');
 ?>
 <!doctype html>
 <html lang="en">
@@ -128,7 +130,13 @@ $subscriber_id = $_GET['id'] ?? 0;
               <div class="card-body">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                   <h5 class="card-title mb-0">Subscriptions</h5>
-                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscriptionModal">Add Subscription</button>
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary tab-btn" data-tab="all">All</button>
+                    <button class="btn btn-sm btn-outline-warning tab-btn" data-tab="near">Near Due Date</button>
+                    <button class="btn btn-sm btn-outline-danger tab-btn" data-tab="penalty">Penalty</button>
+                    <button class="btn btn-sm btn-outline-secondary tab-btn" data-tab="deactivated">Deactivated</button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscriptionModal">Add Subscription</button>
+                  </div>
                 </div>
 
                 <div class="table-responsive">
@@ -273,8 +281,25 @@ const dueDatePicker = flatpickr('#due_date', {
     dateFormat: "M j, Y"
 });
 
-    // Load subscriptions on page load
-    loadSubscriptions();
+  // Current tab state
+  let currentTab = 'all';
+
+  // Highlight default tab
+  document.querySelectorAll('.tab-btn').forEach(b=> b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="all"]').classList.add('active');
+
+  // Hook tab clicks
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.tab-btn').forEach(b=> b.classList.remove('active'));
+      this.classList.add('active');
+      currentTab = this.getAttribute('data-tab');
+      loadSubscriptions();
+    });
+  });
+
+  // Load subscriptions on page load
+  loadSubscriptions();
     loadPlansForSelection();
 
     // Generate reference number when adding new subscription
@@ -445,27 +470,60 @@ const dueDatePicker = flatpickr('#due_date', {
         }, function(response) {
             if (response.success) {
                 let html = '';
-                response.subscriptions.forEach(sub => {
-                    const statusClass = sub.status === 'Active' ? 'bg-success' : 
-                                      sub.status === 'Inactive' ? 'bg-secondary' :
-                                      sub.status === 'Pending' ? 'bg-warning' : 'bg-danger';
-                    
-                    // Format dates
-                    const startDate = sub.started_date ? formatDate(new Date(sub.started_date)) : 'N/A';
-                    const dueDate = sub.due_date ? formatDate(new Date(sub.due_date)) : 'N/A';
-                    
-                    html += `
-                    <tr>
-                        <td>${sub.reference}</td>
-                        <td>${sub.plan_name || 'None'}</td>
-                        <td>${startDate}</td>
-                        <td>${dueDate}</td>
-                        <td><span class="badge ${statusClass}">${sub.status}</span></td>
-                        <td>
-                            <button class="btn btn-outline-primary btn-sm view-subscription" data-id="${sub.id}">View</button>
-                        </td>
-                    </tr>`;
-                });
+        // Manila now from server
+        const manilaNow = new Date('<?= $manilaNowIso ?>');
+
+        response.subscriptions.forEach(sub => {
+          const statusClass = sub.status === 'Active' ? 'bg-success' : 
+                    sub.status === 'Inactive' ? 'bg-secondary' :
+                    sub.status === 'Pending' ? 'bg-warning' : 'bg-danger';
+
+          // Parse DB datetimes into JS Date objects (assume stored in DB as Y-m-d H:i:s in server timezone)
+          const startDateObj = sub.started_date ? new Date(sub.started_date) : null;
+          const dueDateObj = sub.due_date ? new Date(sub.due_date) : null;
+
+          // Determine whether to include this subscription based on currentTab
+          let include = false;
+          if (currentTab === 'all') {
+            include = true;
+          } else if (currentTab === 'near') {
+            if (dueDateObj) {
+              const diffMs = dueDateObj - manilaNow;
+              const diffDays = diffMs / (1000 * 60 * 60 * 24);
+              include = diffDays >= 0 && diffDays <= 7;
+            }
+          } else if (currentTab === 'penalty') {
+            if (dueDateObj) {
+              const diffMs = manilaNow - dueDateObj;
+              const diffDays = diffMs / (1000 * 60 * 60 * 24);
+              include = diffDays > 0 && diffDays < 3;
+            }
+          } else if (currentTab === 'deactivated') {
+            if (dueDateObj) {
+              const diffMs = manilaNow - dueDateObj;
+              const diffDays = diffMs / (1000 * 60 * 60 * 24);
+              include = diffDays >= 3;
+            }
+          }
+
+          if (!include) return; // skip this subscription
+
+          // Format dates for display
+          const startDate = startDateObj ? formatDate(startDateObj) : 'N/A';
+          const dueDate = dueDateObj ? formatDate(dueDateObj) : 'N/A';
+
+          html += `
+          <tr>
+            <td>${sub.reference}</td>
+            <td>${sub.plan_name || 'None'}</td>
+            <td>${startDate}</td>
+            <td>${dueDate}</td>
+            <td><span class="badge ${statusClass}">${sub.status}</span></td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm view-subscription" data-id="${sub.id}">View</button>
+            </td>
+          </tr>`;
+        });
                 
                 $('#subscriptionsTable tbody').html(html || '<tr><td colspan="6" class="text-center">No subscriptions found</td></tr>');
             } else {

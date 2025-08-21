@@ -47,6 +47,14 @@
               </a>
             </li>
             <li class="sidebar-item">
+              <a class="sidebar-link" href="./subscriptions-list" aria-expanded="false">
+                <span>
+                  <i class="ti ti-list"></i>
+                </span>
+                <span class="hide-menu">Subscription List</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
               <a class="sidebar-link" href="./admins" aria-expanded="false">
                 <span>
                   <i class="ti ti-shield-check"></i>
