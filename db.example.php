@@ -1,4 +1,3 @@
-
 <?php
 $host = 'localhost';
 $db   = 'angeleyes'; // Change this to your database name
@@ -8,6 +7,9 @@ $charset = 'utf8mb4';
 
 // Create connection
 $conn = new mysqli($host, $user, $pass, $db);
+     
+ 
+
 
 // Check connection
 if ($conn->connect_error) {
