@@ -318,7 +318,7 @@ try {
             <img class="modal-image" src="images/modal-images/3.png" alt="Modal Image 3">
             <img class="modal-image" src="images/modal-images/4.png" alt="Modal Image 4">
             <img class="modal-image" src="images/modal-images/5.png" alt="Modal Image 5">
-            <img class="modal-image" src="images/modal-images/6.png" alt="Modal Image 6">
+           
             
             
         </div>
