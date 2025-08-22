@@ -1,3 +1,4 @@
+// File: sidebarmenu.js (updated version)
 /*
 Template Name: Admin Template
 Author: Wrappixel
@@ -63,6 +64,24 @@ $(function () {
       var subscribersMenu = $("ul#sidebarnav a[href$='subscribers']");
       subscribersMenu.addClass('active');
       subscribersMenu.parentsUntil('.sidebar-nav').each(function () {
+        if ($(this).is('li') && $(this).children('a').length !== 0) {
+          $(this).children('a').addClass('active');
+          $(this).parent('ul#sidebarnav').length === 0
+            ? $(this).addClass('active')
+            : $(this).addClass('selected');
+        } else if (!$(this).is('ul') && $(this).children('a').length === 0) {
+          $(this).addClass('selected');
+        } else if ($(this).is('ul')) {
+          $(this).addClass('in');
+        }
+      });
+    }
+    
+    // NEW: Subscription List tab should be active for all subscriptions-list pages including tabs
+    if (pathname.indexOf('subscriptions-list') !== -1) {
+      var subscriptionsListMenu = $("ul#sidebarnav a[href$='subscriptions-list']");
+      subscriptionsListMenu.addClass('active');
+      subscriptionsListMenu.parentsUntil('.sidebar-nav').each(function () {
         if ($(this).is('li') && $(this).children('a').length !== 0) {
           $(this).children('a').addClass('active');
           $(this).parent('ul#sidebarnav').length === 0
