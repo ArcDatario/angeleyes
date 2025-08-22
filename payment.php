@@ -109,14 +109,26 @@ unset($_SESSION['payment_error']);
                 <p style="margin-bottom: 16px; color: var(--dark);">We've sent a 6-digit authentication code to your selected method.</p>
                 <div class="form-group">
                     <label>Enter Authentication Code</label>
-                    <div class="auth-code-container">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                        <input type="text" maxlength="1" class="auth-code-input" oninput="PaymentHandler.moveToNext(this)">
-                    </div>
+                                <div class="auth-code-container">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+                <input type="text" maxlength="1" class="auth-code-input" 
+                    oninput="PaymentHandler.moveToNext(this, event)" 
+                    onkeydown="PaymentHandler.moveToNext(this, event)">
+            </div>
                     <a href="#" class="resend-link" onclick="PaymentHandler.resendCode()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21.5 2v6h-6M2.5 22v-6h6M22 12.5a10 10 0 0 1-10 10 10 10 0 0 1-10-10 10 10 0 0 1 10-10 10 10 0 0 1 10 10z"/>
@@ -219,37 +231,40 @@ init: function() {
 },
 
             updateProgressBar: function() {
-                const progressPercentage = ((this.currentStep - 1) / 4) * 100;
-                document.querySelector('.progress-bar').style.width = `${progressPercentage}%`;
+    const progressPercentage = ((this.currentStep - 1) / 4) * 100;
+    document.querySelector('.progress-bar').style.width = `${progressPercentage}%`;
 
-                // Update step indicators
-                document.querySelectorAll('.step').forEach((step, index) => {
-                    step.classList.remove('active', 'completed');
-                    const stepNumber = parseInt(step.dataset.step);
+    // Update step indicators
+    document.querySelectorAll('.step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        const stepNumber = parseInt(step.dataset.step);
 
-                    if (stepNumber < this.currentStep) {
-                        step.classList.add('completed');
-                    } else if (stepNumber === this.currentStep) {
-                        step.classList.add('active');
-                    }
-                });
+        if (stepNumber < this.currentStep) {
+            step.classList.add('completed');
+        } else if (stepNumber === this.currentStep) {
+            step.classList.add('active');
+        }
+    });
 
-                // Update step content visibility
-                document.querySelectorAll('.step-content').forEach(content => {
-                    content.classList.remove('active');
-                    if (parseInt(content.dataset.stepContent) === this.currentStep) {
-                        content.classList.add('active');
-                    }
-                });
+    // Update step content visibility
+    document.querySelectorAll('.step-content').forEach(content => {
+        content.classList.remove('active');
+        if (parseInt(content.dataset.stepContent) === this.currentStep) {
+            content.classList.add('active');
+        }
+    });
 
-                // Update payment summary if we have the data
-                if (this.subscriptionData && this.currentStep === 4) {
-                    document.getElementById('summary-plan-name').textContent = this.subscriptionData.plan_name;
-                    document.getElementById('summary-reference').textContent = this.subscriptionData.reference;
-                    document.getElementById('summary-amount').textContent = '₱' + parseFloat(this.subscriptionData.price).toFixed(2);
-                    document.getElementById('summary-due-date').textContent = new Date(this.subscriptionData.due_date).toLocaleDateString();
-                }
-            },
+    // Update payment summary if we have the data
+    if (this.subscriptionData && this.currentStep === 4) {
+        document.getElementById('summary-plan-name').textContent = this.subscriptionData.plan_name;
+        document.getElementById('summary-reference').textContent = this.subscriptionData.reference;
+        document.getElementById('summary-amount').textContent = '₱' + parseFloat(this.subscriptionData.price).toFixed(2);
+        document.getElementById('summary-due-date').textContent = new Date(this.subscriptionData.due_date).toLocaleDateString();
+    }
+    
+    // Focus on first input when reaching step 3
+    this.focusFirstInput();
+},
 
             verifyReference: function() {
     const reference = document.getElementById('reference').value.trim();
@@ -442,15 +457,45 @@ pollPaymentStatus: function() {
                 window.location.href = 'payment.php'; // Reload to clear session
             },
 
-            moveToNext: function(input) {
-                if (input.value.length === 1) {
-                    const nextInput = input.nextElementSibling;
-                    if (nextInput && nextInput.classList.contains('auth-code-input')) {
-                        nextInput.focus();
-                    }
-                }
-            },
+           // In the PaymentHandler object, add this new method:
+handleBackspace: function(input, event) {
+    if (event.key === 'Backspace' && input.value === '') {
+        const prevInput = input.previousElementSibling;
+        if (prevInput && prevInput.classList.contains('auth-code-input')) {
+            prevInput.focus();
+            prevInput.value = '';
+        }
+    }
+},
 
+// Also update the moveToNext method:
+moveToNext: function(input, event) {
+    if (input.value.length === 1) {
+        const nextInput = input.nextElementSibling;
+        if (nextInput && nextInput.classList.contains('auth-code-input')) {
+            nextInput.focus();
+        }
+    }
+    
+    // Handle backspace key
+    if (event && event.key === 'Backspace' && input.value === '') {
+        const prevInput = input.previousElementSibling;
+        if (prevInput && prevInput.classList.contains('auth-code-input')) {
+            prevInput.focus();
+        }
+    }
+},
+focusFirstInput: function() {
+    if (this.currentStep === 3) {
+        // Small delay to ensure the step is visible before focusing
+        setTimeout(() => {
+            const firstInput = document.querySelector('.auth-code-input');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        }, 100);
+    }
+},
             setupPaymentMethodDropdown: function() {
                 const dropdown = document.getElementById('custom-payment-method');
                 const selected = dropdown.querySelector('.custom-dropdown-selected');
