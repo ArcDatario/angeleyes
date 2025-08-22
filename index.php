@@ -108,12 +108,15 @@ try {
         </div>
     </nav>
     
-    <!-- Hero Section -->
-    <!-- Hero Section -->
+<!-- Hero Section -->
 <section id="home">
     <div class="hero-content">
         <div class="hero-text">
             <h1 class="hero-title">Ultra-Fast <span>Fiber Optic</span> Internet</h1>
+            
+            <!-- Mobile SVG container (shown only on mobile) -->
+            <div class="mobile-svg-container"></div>
+            
             <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Pampanga. Stream, game, and work without interruptions.</p>
             
             <div class="hero-buttons">
@@ -123,8 +126,7 @@ try {
         </div>
         
         <div class="hero-image-container">
-           
-            
+            <!-- Empty container for layout consistency -->
         </div>
     </div>
 </section>
