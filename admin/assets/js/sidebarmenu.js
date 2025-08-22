@@ -14,23 +14,46 @@ $(function () {
       window.location.protocol + "//" + window.location.host + "/",
       ""
     );
+    
+    // First remove any existing active classes
+    $("ul#sidebarnav a").removeClass("active");
+    $("ul#sidebarnav li").removeClass("active selected");
+    $("ul#sidebarnav ul").removeClass("in");
+    
+    // Special handling for dashboard page
+    if (path.includes("dashboard") || path.endsWith("admin/") || path.endsWith("admin")) {
+        var dashboardLink = $("ul#sidebarnav a[href$='dashboard']");
+        dashboardLink.addClass("active");
+        dashboardLink.parent("li").addClass("active");
+        return;
+    }
+    
     var element = $("ul#sidebarnav a").filter(function () {
-      return this.href === url || this.href === path; // || url.href.indexOf(this.href) === 0;
-    });
-    element.parentsUntil(".sidebar-nav").each(function (index) {
-      if ($(this).is("li") && $(this).children("a").length !== 0) {
-        $(this).children("a").addClass("active");
-        $(this).parent("ul#sidebarnav").length === 0
-          ? $(this).addClass("active")
-          : $(this).addClass("selected");
-      } else if (!$(this).is("ul") && $(this).children("a").length === 0) {
-        $(this).addClass("selected");
-      } else if ($(this).is("ul")) {
-        $(this).addClass("in");
+      // Skip logout link from active class assignment
+      if (this.href.includes("logout") || $(this).hasClass("logout-link")) {
+        return false;
       }
+      
+      // For other links, check if they match current URL
+      return this.href === url || this.href === path;
     });
+    
+    if (element.length > 0) {
+        element.addClass("active");
+        element.parentsUntil(".sidebar-nav").each(function (index) {
+          if ($(this).is("li") && $(this).children("a").length !== 0) {
+            $(this).children("a").addClass("active");
+            $(this).parent("ul#sidebarnav").length === 0
+              ? $(this).addClass("active")
+              : $(this).addClass("selected");
+          } else if (!$(this).is("ul") && $(this).children("a").length === 0) {
+            $(this).addClass("selected");
+          } else if ($(this).is("ul")) {
+            $(this).addClass("in");
+          }
+        });
+    }
 
-    element.addClass("active");
     // Subscribers tab should also be active for both subscribers and subscriptions pages (but not subscriptions-list)
     var pathname = window.location.pathname.toLowerCase();
     if (
@@ -52,7 +75,13 @@ $(function () {
         }
       });
     }
+    
     $("#sidebarnav a").on("click", function (e) {
+      // Don't process active class for logout link
+      if ($(this).hasClass("logout-link") || this.href.includes("logout")) {
+        return;
+      }
+      
       if (!$(this).hasClass("active")) {
         // hide any open menus and remove all other classes
         $("ul", $(this).parents("ul:first")).removeClass("in");
@@ -67,7 +96,8 @@ $(function () {
         $(this).next("ul").removeClass("in");
       }
     });
+    
     $("#sidebarnav >li >a.has-arrow").on("click", function (e) {
       e.preventDefault();
     });
-  });
+});

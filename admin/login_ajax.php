@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $response['success'] = true;
             $response['message'] = 'Login successful!';
             // Tell the client where to redirect on success
-            $response['redirect'] = 'dashboard.php';
+            $response['redirect'] = 'dashboard';
         } else {
             $response['message'] = 'Invalid username or password.';
         }
