@@ -194,7 +194,8 @@ unset($_SESSION['payment_error']);
             </div>
         </div>
     </div>
-
+  
+    
     <script>
         const PaymentHandler = {
             currentStep: 1,
