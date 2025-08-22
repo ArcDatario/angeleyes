@@ -104,6 +104,17 @@ try {
             throw new Exception('Plan not found');
         }
         
+        // Check if plan has any active subscriptions
+        $active_subscriptions = $conn->query("
+            SELECT COUNT(*) as active_count 
+            FROM subscriptions 
+            WHERE plan_id = $id AND status = 'Active'
+        ")->fetch_assoc();
+        
+        if ($active_subscriptions['active_count'] > 0) {
+            throw new Exception('Cannot delete plan with active subscriptions.');
+        }
+        
         $conn->begin_transaction();
         try {
             $conn->query("DELETE FROM inclusions WHERE plan_id = $id");
@@ -147,7 +158,7 @@ try {
     elseif ($action === 'get_plans') {
         $plans = $conn->query("
             SELECT p.*, 
-                   (SELECT COUNT(*) FROM subscribers WHERE plan_id = p.id) AS subs_count,
+                   (SELECT COUNT(*) FROM subscriptions WHERE plan_id = p.id AND status = 'Active') AS active_subs_count,
                    GROUP_CONCAT(i.inclusion_text SEPARATOR '||') AS inclusions
             FROM plans p
             LEFT JOIN inclusions i ON p.id = i.plan_id

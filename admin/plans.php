@@ -12,7 +12,7 @@ require_login();
   <style>
     .toast {
         position: fixed;
-        top: 20px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 1100;
