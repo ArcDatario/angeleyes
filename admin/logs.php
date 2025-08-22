@@ -49,8 +49,8 @@ require_once '../admin/auth_check.php';
                   <table class="table table-hover align-middle log-table" id="logsTable">
                     <thead>
                       <tr>
-                        <th>ID</th>
                         <th>Admin</th>
+                        <th>Logs</th>
                         <th>Date & Time</th>
                       </tr>
                     </thead>

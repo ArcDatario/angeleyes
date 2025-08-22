@@ -1,7 +1,8 @@
 <?php
 // File: admin/subscriptions-list.php
 require_once '../db.php';
-
+require_once('auth_check.php');
+require_login();
 // Use Asia/Manila timezone for all date calculations and provide helpers for formatting
 date_default_timezone_set('Asia/Manila');
 $now = new DateTime('now');

@@ -1,7 +1,8 @@
 <?php
 // File: subscriptions.php
 require_once '../db.php';
-
+require_once('auth_check.php');
+require_login();
 // Get subscriber ID from query parameter
 $subscriber_id = $_GET['id'] ?? 0;
 // Manila now (server) in ISO format for client-side comparisons
