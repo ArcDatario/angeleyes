@@ -109,19 +109,25 @@ try {
     </nav>
     
     <!-- Hero Section -->
-    <section id="home">
-        <div class="hero-content">
-            <h1 class="hero-title">Ultra-Fast Fiber Optic Internet</h1>
-            <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Pampanga</p>
-            
-            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="ANGELEYES Network" class="hero-image">
+    <!-- Hero Section -->
+<section id="home">
+    <div class="hero-content">
+        <div class="hero-text">
+            <h1 class="hero-title">Ultra-Fast <span>Fiber Optic</span> Internet</h1>
+            <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Pampanga. Stream, game, and work without interruptions.</p>
             
             <div class="hero-buttons">
-                <a href="#pricing" class="cta-button">View Plans</a>
+                <a href="#internet-plans" class="cta-button">View Plans</a>
                 <a href="#coverage" class="secondary-button">Check Coverage</a>
             </div>
         </div>
-    </section>
+        
+        <div class="hero-image-container">
+           
+            
+        </div>
+    </div>
+</section>
         <!-- Product Section -->
     <section id="products">
         <h2 class="section-title">Our Products</h2>
