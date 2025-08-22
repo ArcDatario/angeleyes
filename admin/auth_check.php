@@ -14,7 +14,7 @@ function is_logged_in() {
         global $conn;
         
         $token = $_COOKIE['admin_remember'];
-        $query = "SELECT id, username FROM admin WHERE remember_token = ? AND remember_expiry > NOW()";
+        $query = "SELECT id, username, profile FROM admin WHERE remember_token = ? AND remember_expiry > NOW()";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $token);
         $stmt->execute();
@@ -27,6 +27,8 @@ function is_logged_in() {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_username'] = $admin['username'];
+            $_SESSION['admin_profile'] = !empty($admin['profile']) ? 
+                '../admin/uploads/'.$admin['profile'] : '../user.png';
             
             $stmt->close();
             return true;
@@ -41,6 +43,11 @@ function is_logged_in() {
 // Get current admin ID
 function get_admin_id() {
     return $_SESSION['admin_id'] ?? null;
+}
+
+// Get admin profile image
+function get_admin_profile() {
+    return $_SESSION['admin_profile'] ?? '../user.png';
 }
 
 // Redirect to login if not authenticated

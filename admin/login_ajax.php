@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require_once('../db.php');
@@ -21,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     
     // Check credentials against database
-    $query = "SELECT id, username, password FROM admin WHERE username = ?";
+    $query = "SELECT id, username, password, profile FROM admin WHERE username = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -36,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['admin_logged_in'] = true;
             $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_username'] = $admin['username'];
+            $_SESSION['admin_profile'] = !empty($admin['profile']) ? 
+                '../admin/uploads/'.$admin['profile'] : '../user.png';
             
             // Set remember me cookie if requested
             if ($remember_me) {

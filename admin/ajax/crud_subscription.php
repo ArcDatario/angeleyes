@@ -108,7 +108,7 @@ try {
             $changes = [];
             if ($old_data['plan_id'] != $plan_id) {
                 $old_plan = $conn->query("SELECT plan_name, price FROM plans WHERE id = {$old_data['plan_id']}")->fetch_assoc();
-                $changes[] = "plan: {$old_plan['plan_name']} (\${$old_plan['price']}) → {$plan['plan_name']} (\${$plan['price']})";
+                $changes[] = "plan: {$old_plan['plan_name']} (₱{$old_plan['price']}) → {$plan['plan_name']} (₱{$plan['price']})";
             }
             if ($old_data['address'] !== $address) $changes[] = "address: {$old_data['address']} → $address";
             if ($old_data['started_date'] !== $started_date) $changes[] = "start date: {$old_data['started_date']} → $started_date";
@@ -117,7 +117,7 @@ try {
             
             $log_content = "Updated subscription ref: $reference for subscriber: {$subscriber['full_name']} (USER_ID: {$subscriber['user_id']}) - " . implode(', ', $changes);
         } else {
-            $log_content = "Created new subscription ref: $reference for subscriber: {$subscriber['full_name']} (USER_ID: {$subscriber['user_id']}) - Plan: {$plan['plan_name']} (\${$plan['price']}), Address: $address, Started: $started_date, Due: $due_date, Status: $status";
+            $log_content = "Created new subscription ref: $reference for subscriber: {$subscriber['full_name']} (USER_ID: {$subscriber['user_id']}) - Plan: {$plan['plan_name']} (₱{$plan['price']}), Address: $address, Started: $started_date, Due: $due_date, Status: $status";
         }
         
         add_log($log_content);
@@ -151,7 +151,7 @@ try {
         }
         
         // Add detailed log entry
-        $log_content = "Deleted subscription ID: $id for subscriber: {$subscription['full_name']} (USER_ID: {$subscription['user_id']}) - Plan: {$subscription['plan_name']} (\${$subscription['price']}), Started: {$subscription['started_date']}, Due: {$subscription['due_date']}, Status: {$subscription['status']}";
+        $log_content = "Deleted subscription ID: $id for subscriber: {$subscription['full_name']} (USER_ID: {$subscription['user_id']}) - Plan: {$subscription['plan_name']} (₱{$subscription['price']}), Started: {$subscription['started_date']}, Due: {$subscription['due_date']}, Status: {$subscription['status']}";
         add_log($log_content);
         
         $response['success'] = true;

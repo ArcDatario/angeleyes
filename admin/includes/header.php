@@ -1,3 +1,4 @@
+
 <header class="app-header">
     <nav class="navbar navbar-expand-lg navbar-light">
         <ul class="navbar-nav">
@@ -13,26 +14,13 @@
                 <a class="nav-link nav-icon-hover" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
                     aria-expanded="false">
                     <?php
-                    // Get the admin ID from session
-                    $admin_id = $_SESSION['admin_id'] ?? null;
+                    // Use the profile image from session with correct path
+                    $profile_img = isset($_SESSION['admin_profile']) ? 
+                        $_SESSION['admin_profile'] : '../../user.png';
                     
-                    if ($admin_id) {
-                        // Fetch the latest profile image from database
-                        require_once '../db.php';
-                        $query = "SELECT profile FROM admin WHERE id = $admin_id";
-                        $result = $conn->query($query);
-                        
-                        if ($result && $result->num_rows > 0) {
-                            $admin_data = $result->fetch_assoc();
-                            $profile_img = !empty($admin_data['profile']) ? 
-                                '../admin/uploads/'.$admin_data['profile'] : '../user.png';
-                        } else {
-                            // Fallback if query fails
-                            $profile_img = '../user.png';
-                        }
-                    } else {
-                        // Fallback values if no session
-                        $profile_img = '../user.png';
+                    // Check if the image exists, if not use default
+                    if (!file_exists($profile_img)) {
+                        $profile_img = '../../user.png';
                     }
                     ?>
                     <img src="<?php echo $profile_img; ?>" 

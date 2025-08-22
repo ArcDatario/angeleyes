@@ -1,3 +1,4 @@
+
 <?php
 // File: profile.php
 require_once '../db.php';
@@ -57,6 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 if ($stmt->execute()) {
+                    // Update session with new profile image path
+                    $_SESSION['admin_profile'] = !empty($profile_filename) ? 
+                        '../admin/uploads/'.$profile_filename : '../../user.png';
+                    
                     $success = "Profile updated successfully";
                     // Refresh admin data
                     $result = $conn->query($query);
@@ -169,10 +174,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
               
               <div class="mb-3">
-                <label for="password" class="form-label">New Password</label>
-                <input type="password" class="form-control" id="password" name="password">
-                <div class="form-text">Leave blank to keep current password</div>
-              </div>
+    <label for="password" class="form-label">New Password</label>
+    <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" value="">
+    <div class="form-text">Leave blank to keep current password</div>
+</div>
             </div>
             
             <div class="info-section">
