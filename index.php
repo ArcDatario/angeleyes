@@ -250,8 +250,10 @@ try {
             ?>
                 <div class="pricing-card <?php echo $is_popular ? 'popular' : ''; ?>">
                     <?php if (!empty($plan['badge'])): ?>
-                        <span class="plan-badge"><?php echo htmlspecialchars($plan['badge']); ?></span>
-                    <?php endif; ?>
+    <span class="plan-badge"><?php echo htmlspecialchars($plan['badge']); ?></span>
+<?php else: ?>
+    <br>
+<?php endif; ?>
                     
                     <h3><?php echo htmlspecialchars($plan['plan_name']); ?></h3>
                     <div class="price">₱<?php echo number_format($plan['price'], 2); ?> <span>/month</span></div>
