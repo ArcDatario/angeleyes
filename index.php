@@ -252,15 +252,12 @@ try {
         <button class="modal-close" id="modalCloseBtn" aria-label="Close">&times;</button>
         <div class="modal-image-container">
            
-            
             <!-- Your images are displayed here -->
             <img class="modal-image active" src="images/modal-images/1.png" alt="Modal Image 1">
             <img class="modal-image" src="images/modal-images/2.png" alt="Modal Image 2">
             <img class="modal-image" src="images/modal-images/3.png" alt="Modal Image 3">
             <img class="modal-image" src="images/modal-images/4.png" alt="Modal Image 4">
             <img class="modal-image" src="images/modal-images/5.png" alt="Modal Image 5">
-           
-            
             
         </div>
         <div class="image-indicators" id="imageIndicators">
@@ -272,8 +269,10 @@ try {
             <div class="indicator" data-index="5"></div>
         </div>
         <div class="modal-actions">
-            <button class="apply-btn">Apply Now</button>
-            <button class="pay-btn">Pay Online</button>
+            <button class="pay-btn" onclick="window.open('payment', '_blank')">
+                Pay Online
+                <span class="arrow-right">→</span>
+            </button>
         </div>
     </div>
 </div>
