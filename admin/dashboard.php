@@ -21,9 +21,11 @@ require_login();
 
     <!--  Main wrapper -->
     <div class="body-wrapper">
+
       <!--  Header Start -->
       <?php include "includes/header.php";?>
       <!--  Header End -->
+        
       <div class="container-fluid">
         <!--  Row 1 -->
         <div class="row">

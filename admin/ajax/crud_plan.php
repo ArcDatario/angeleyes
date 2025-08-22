@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: application/json');
 require_once '../../db.php';
+require_once '../../admin/auth_check.php';
+require_once 'log_helper.php';
 
 $response = ['success' => false, 'message' => ''];
 
@@ -17,6 +19,17 @@ try {
 
         if (empty($plan_name) || $price <= 0) {
             throw new Exception('Plan name and valid price are required');
+        }
+
+        // Get old data for update log
+        $old_data = [];
+        $old_inclusions = [];
+        if ($id > 0) {
+            $old_data_result = $conn->query("SELECT * FROM plans WHERE id = $id");
+            $old_data = $old_data_result->fetch_assoc();
+            
+            $old_inclusions_result = $conn->query("SELECT inclusion_text FROM inclusions WHERE plan_id = $id");
+            $old_inclusions = array_column($old_inclusions_result->fetch_all(MYSQLI_ASSOC), 'inclusion_text');
         }
 
         if ($id > 0) {
@@ -47,6 +60,28 @@ try {
             }
         }
 
+        // Add detailed log entry
+        if ($id > 0) {
+            $changes = [];
+            if ($old_data['plan_name'] !== $plan_name) $changes[] = "name: {$old_data['plan_name']} → $plan_name";
+            if ($old_data['badge'] !== $badge) $changes[] = "badge: {$old_data['badge']} → $badge";
+            if ($old_data['price'] != $price) $changes[] = "price: ₱{$old_data['price']} → ₱$price";
+            
+            // Check for inclusion changes
+            $new_inclusions = array_map('trim', $inclusions);
+            $new_inclusions = array_filter($new_inclusions);
+            
+            if (implode(',', $old_inclusions) !== implode(',', $new_inclusions)) {
+                $changes[] = "inclusions updated";
+            }
+            
+            $log_content = "Updated plan ID: $plan_id - " . implode(', ', $changes);
+        } else {
+            $log_content = "Created new plan: $plan_name (₱$price) with badge: " . ($badge ?: 'none') . " and " . count($inclusions) . " inclusions";
+        }
+        
+        add_log($log_content);
+        
         $response['success'] = true;
         $response['message'] = 'Plan saved successfully';
         $response['id'] = $plan_id;
@@ -54,6 +89,20 @@ try {
     // DELETE PLAN
     elseif ($action === 'delete_plan') {
         $id = (int)$_POST['id'];
+        
+        // Get plan details for log
+        $plan = $conn->query("
+            SELECT p.*, 
+                   GROUP_CONCAT(i.inclusion_text SEPARATOR ', ') AS inclusions
+            FROM plans p
+            LEFT JOIN inclusions i ON p.id = i.plan_id
+            WHERE p.id = $id
+            GROUP BY p.id
+        ")->fetch_assoc();
+        
+        if (!$plan) {
+            throw new Exception('Plan not found');
+        }
         
         $conn->begin_transaction();
         try {
@@ -67,6 +116,11 @@ try {
             }
             
             $conn->commit();
+            
+            // Add detailed log entry
+            $log_content = "Deleted plan ID: $id - Name: {$plan['plan_name']}, Price: ₱{$plan['price']}, Badge: " . ($plan['badge'] ?: 'none');
+            add_log($log_content);
+            
             $response['success'] = true;
             $response['message'] = 'Plan deleted successfully';
         } catch (Exception $e) {

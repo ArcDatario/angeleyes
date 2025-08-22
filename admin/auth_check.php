@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 
@@ -35,6 +36,11 @@ function is_logged_in() {
     }
     
     return false;
+}
+
+// Get current admin ID
+function get_admin_id() {
+    return $_SESSION['admin_id'] ?? null;
 }
 
 // Redirect to login if not authenticated

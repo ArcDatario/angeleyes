@@ -1,7 +1,10 @@
+
 <?php
 // File: ajax/crud_subscriber.php
 header('Content-Type: application/json');
 require_once '../../db.php';
+require_once '../../admin/auth_check.php'; // Add this line
+require_once 'log_helper.php'; // Add this line
 
 $response = ['success' => false, 'message' => ''];
 
@@ -21,6 +24,13 @@ try {
             throw new Exception('Full name, email and phone are required');
         }
 
+        // Get old data for update log
+        $old_data = [];
+        if ($id > 0) {
+            $old_data_result = $conn->query("SELECT * FROM subscribers WHERE id = $id");
+            $old_data = $old_data_result->fetch_assoc();
+        }
+
         if ($id > 0) { // Update
             $stmt = $conn->prepare("UPDATE subscribers SET full_name=?, email=?, phone=?, address=?, status=? WHERE id=?");
             $stmt->bind_param("sssssi", $full_name, $email, $phone, $address, $status, $id);
@@ -36,14 +46,39 @@ try {
         }
 
         $subscriber_id = $id > 0 ? $id : $stmt->insert_id;
+        $subscriber_user_id = $id > 0 ? $old_data['user_id'] : $user_id;
+        
+        // Add detailed log entry
+        if ($id > 0) {
+            $changes = [];
+            if ($old_data['full_name'] !== $full_name) $changes[] = "name: {$old_data['full_name']} → $full_name";
+            if ($old_data['email'] !== $email) $changes[] = "email: {$old_data['email']} → $email";
+            if ($old_data['phone'] !== $phone) $changes[] = "phone: {$old_data['phone']} → $phone";
+            if ($old_data['address'] !== $address) $changes[] = "address: {$old_data['address']} → $address";
+            if ($old_data['status'] !== $status) $changes[] = "status: {$old_data['status']} → $status";
+            
+            $log_content = "Updated subscriber USER_ID: $subscriber_user_id - " . implode(', ', $changes);
+        } else {
+            $log_content = "Created new subscriber: $full_name, USER_ID: $subscriber_user_id, Email: $email, Phone: $phone, Status: $status";
+        }
+        
+        add_log($log_content);
         
         $response['success'] = true;
         $response['message'] = 'Subscriber saved successfully';
         $response['id'] = $subscriber_id;
+        $response['user_id'] = $subscriber_user_id;
     }
     // DELETE SUBSCRIBER
     elseif ($action === 'delete_subscriber') {
         $id = (int)$_POST['id'];
+        
+        // Get subscriber details for log
+        $subscriber = $conn->query("SELECT user_id, full_name, email, phone, subscription_count FROM subscribers WHERE id = $id")->fetch_assoc();
+        
+        if (!$subscriber) {
+            throw new Exception('Subscriber not found');
+        }
         
         $stmt = $conn->prepare("DELETE FROM subscribers WHERE id = ?");
         $stmt->bind_param("i", $id);
@@ -51,6 +86,10 @@ try {
         if (!$stmt->execute() || $stmt->affected_rows === 0) {
             throw new Exception('Subscriber not found or already deleted');
         }
+        
+        // Add detailed log entry
+        $log_content = "Deleted subscriber: {$subscriber['full_name']}, USER_ID: {$subscriber['user_id']}, Email: {$subscriber['email']}, Phone: {$subscriber['phone']}, Had {$subscriber['subscription_count']} subscriptions";
+        add_log($log_content);
         
         $response['success'] = true;
         $response['message'] = 'Subscriber deleted successfully';
@@ -83,6 +122,9 @@ try {
         $id = (int)$_POST['id'];
         $increment = (int)$_POST['increment'];
         
+        // Get subscriber details for log
+        $subscriber = $conn->query("SELECT user_id, full_name, subscription_count FROM subscribers WHERE id = $id")->fetch_assoc();
+        
         $stmt = $conn->prepare("UPDATE subscribers SET subscription_count = subscription_count + ? WHERE id = ?");
         $stmt->bind_param("ii", $increment, $id);
         
@@ -90,8 +132,17 @@ try {
             throw new Exception('Failed to update subscription count');
         }
         
+        // Get new count
+        $new_count = $subscriber['subscription_count'] + $increment;
+        
+        // Add detailed log entry
+        $action = $increment > 0 ? "increased" : "decreased";
+        $log_content = "$action subscription count for subscriber: {$subscriber['full_name']} (USER_ID: {$subscriber['user_id']}) from {$subscriber['subscription_count']} to $new_count";
+        add_log($log_content);
+        
         $response['success'] = true;
         $response['message'] = 'Subscription count updated';
+        $response['new_count'] = $new_count;
     }
     else {
         throw new Exception('Invalid action');

@@ -61,9 +61,26 @@
             <span class="hide-menu">Admins</span>
           </a>
         </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="./logs.php" aria-expanded="false">
+            <span>
+              <i class="ti ti-notebook"></i>
+            </span>
+            <span class="hide-menu">Logs</span>
+          </a>
+        </li>
+
         <li class="nav-small-cap">
           <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-          <span class="hide-menu">LOG OUT</span>
+          <span class="hide-menu">Account</span>
+        </li>
+        <li class="sidebar-item">
+          <a class="sidebar-link" href="./profile.php" aria-expanded="false">
+            <span>
+              <i class="ti ti-address-book"></i>
+            </span>
+            <span class="hide-menu">Profile</span>
+          </a>
         </li>
         <li class="sidebar-item">
           <a class="sidebar-link logout-link" href="#" aria-expanded="false">
