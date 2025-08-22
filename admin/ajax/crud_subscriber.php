@@ -1,10 +1,9 @@
-
 <?php
 // File: ajax/crud_subscriber.php
 header('Content-Type: application/json');
 require_once '../../db.php';
-require_once '../../admin/auth_check.php'; // Add this line
-require_once 'log_helper.php'; // Add this line
+require_once '../../admin/auth_check.php';
+require_once 'log_helper.php';
 
 $response = ['success' => false, 'message' => ''];
 
@@ -78,6 +77,17 @@ try {
         
         if (!$subscriber) {
             throw new Exception('Subscriber not found');
+        }
+        
+        // Check if subscriber has any subscriptions (using user_id from subscribers table)
+        $subscriptions_count = $conn->query("
+            SELECT COUNT(*) as subscription_count 
+            FROM subscriptions 
+            WHERE user_id = '{$subscriber['user_id']}'
+        ")->fetch_assoc();
+        
+        if ($subscriptions_count['subscription_count'] > 0) {
+            throw new Exception('Cannot delete subscriber with existing subscriptions. Please delete all subscriptions first.');
         }
         
         $stmt = $conn->prepare("DELETE FROM subscribers WHERE id = ?");

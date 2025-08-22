@@ -11,10 +11,10 @@ require_login();
   <style>
     .toast {
         position: fixed;
-        top: 20px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 1100;
+        z-index: 20000 !important; /* Increased to always be above modals */
         font-size: 0.85rem;
         padding: 0.5rem 1rem;
         background-color: #f8f9fa;
