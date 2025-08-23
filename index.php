@@ -312,7 +312,6 @@ try {
             <div class="indicator" data-index="4"></div>
             <div class="indicator" data-index="5"></div>
             <div class="indicator" data-index="6"></div>
-
         </div>
         <div class="modal-actions">
             <button class="pay-btn" onclick="window.open('payment', '_blank')">
