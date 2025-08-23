@@ -77,9 +77,7 @@ try {
     .logo img {
         height: 35px;
     }
-    .cta-button{
-        display:none;
-    }
+  
 }
     </style>
 </head>
