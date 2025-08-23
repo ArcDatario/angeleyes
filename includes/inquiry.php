@@ -17,7 +17,7 @@
                     <i class="fas fa-question-circle"></i>
                 </div>
                 <h3>Inquire</h3>
-                <p>Visit us in one of our offices in Sto. Rosario, Sto. Tomas, or Apalit to learn more about our offers and inquire about our services.</p>
+                <p>Visit us in one of our offices in Solano, Nueva Vizcaya or Apalit to learn more about our offers and inquire about our services.</p>
                 <a href="#branches" class="secondary-button">View Branches</a>
             </div>
             

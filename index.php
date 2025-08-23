@@ -175,12 +175,12 @@ try {
         <div class="about-content">
             <div class="mission-vision">
                 <h3>Our Mission</h3>
-                <p class="text-justify">At Angeleyes Solutions Inc., we provide fast internet (P2P Air Fiber, FTTH, Cable TV), strong security (CCTV, FDAS, Smart Gates), solar power, and tech systems like Piso WiFi, online payments, and LAN/Data Cabinets. We're here to make modern tech easy, affordable, and available for everyone—backed by expert support every step of the way</p>
+                <p class="text-center">At Angeleyes Solutions Inc., we provide fast internet (P2P Air Fiber, FTTH, Cable TV), strong security (CCTV, FDAS, Smart Gates), solar power, and tech systems like Piso WiFi, online payments, and LAN/Data Cabinets. We're here to make modern tech easy, affordable, and available for everyone—backed by expert support every step of the way</p>
             </div>
             
             <div class="mission-vision">
                 <h3>Our Vision</h3>
-                <p class="text-justify">Filipino home and business with smart, secure, and sustainable tech solutions.</p>
+                <p class="text-center">Filipino home and business with smart, secure, and sustainable tech solutions.</p>
             </div>
         </div>
         
@@ -189,7 +189,9 @@ try {
 </section>
 
 <style>
-
+.text-center{
+    text-align: center !important;
+}
 .text-justify {
     text-align: justify !important;
     text-justify: inter-word !important;
