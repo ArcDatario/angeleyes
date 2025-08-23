@@ -189,6 +189,9 @@ try {
 </section>
 
 <style>
+    .text-left{
+    text-align: left !important;
+    }
 .text-center{
     text-align: center !important;
 }

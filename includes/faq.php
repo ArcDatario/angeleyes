@@ -9,7 +9,7 @@
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>We currently cover  Apalit, Minalin, San Simon, Sto. Tomas, and Masantol. You can check our coverage section for specific barangays in each municipality.</p>
+                    <p>We currently cover  Solano, Nueva Vizcaya. You can check our coverage section for specific barangays in each municipality.</p>
                 </div>
             </div>
             
