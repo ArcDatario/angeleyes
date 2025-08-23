@@ -108,6 +108,8 @@ try {
         </div>
     </nav>
      
+
+    
 <!-- Hero Section -->
 <section id="home">
     <div class="hero-content">
