@@ -257,17 +257,17 @@ try {
             <div class="feature-cards">
                 <div class="feature-card">
                     <h3>Fast</h3>
-                    <p>Faster speeds are available for your home. With speeds up to 200, 300, and 400 Mbps; PADECO Fiber Optic Internet currently offers the top speed – much faster than DSL and cable.</p>
+                    <p>Faster speeds are available for your home. With speeds up to 200, 300, and 400 Mbps; ANGELEYES Fiber Optic Internet currently offers the top speed – much faster than DSL and cable.</p>
                 </div>
                 
                 <div class="feature-card">
                     <h3>Reliable</h3>
-                    <p>Reliable Internet means a stable internet connection. With PADECO, you don't have to struggle to keep your bandwidth high and won't have to worry about frequent disconnections.</p>
+                    <p>Reliable Internet means a stable internet connection. With ANGELEYES, you don't have to struggle to keep your bandwidth high and won't have to worry about frequent disconnections.</p>
                 </div>
                 
                 <div class="feature-card">
                     <h3>Secure</h3>
-                    <p>Security matters. Knowing that your work is secure, that your accounts are safe, and that your information is protected is important. PADECO Internet offers you this and more.</p>
+                    <p>Security matters. Knowing that your work is secure, that your accounts are safe, and that your information is protected is important. ANGELEYES Internet offers you this and more.</p>
                 </div>
             </div>
         </div>
