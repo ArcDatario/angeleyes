@@ -107,6 +107,7 @@ try {
             <i class="fas fa-bars"></i>
         </div>
     </nav>
+     
     
 <!-- Hero Section -->
 <section id="home">
