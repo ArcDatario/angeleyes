@@ -35,7 +35,7 @@
                 <ul>
                     <li><i class="fas fa-phone-alt"></i> (045) 123-4567</li>
                     <li><i class="fas fa-envelope"></i> support@angeleyes.com</li>
-                    <li><i class="fas fa-map-marker-alt"></i> ANGELEYES Bldg.,137 Macabebe, Pampanga</li>
+                    <li><i class="fas fa-map-marker-alt"></i> ANGELEYES Bldg.,137  Solano, Nueva Vizcaya</li>
                 </ul>
             </div>
         </div>

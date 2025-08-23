@@ -9,7 +9,7 @@
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>We currently cover Macabebe, Apalit, Minalin, San Simon, Sto. Tomas, and Masantol. You can check our coverage section for specific barangays in each municipality.</p>
+                    <p>We currently cover  Apalit, Minalin, San Simon, Sto. Tomas, and Masantol. You can check our coverage section for specific barangays in each municipality.</p>
                 </div>
             </div>
             
@@ -179,7 +179,7 @@
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="faq-answer">
-                    <p>Our main office is in Macabebe, with branches in Sto. Tomas, Apalit, and Masantol. Please see our Branches section for complete addresses and contact details.</p>
+                    <p>Our main office is in  with branches in Sto. Tomas, Apalit, and Masantol. Please see our Branches section for complete addresses and contact details.</p>
                 </div>
             </div>
             

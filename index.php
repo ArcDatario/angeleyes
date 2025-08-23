@@ -117,7 +117,7 @@ try {
             <!-- Mobile SVG container (shown only on mobile) -->
             <div class="mobile-svg-container"></div>
             
-            <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Pampanga. Stream, game, and work without interruptions.</p>
+            <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Solano, Nueva Vizcaya. Stream, game, and work without interruptions.</p>
             
             <div class="hero-buttons">
                 <a href="#internet-plans" class="cta-button">View Plans</a>
@@ -165,26 +165,62 @@ try {
 <!-- Gallery Section -->
 <?php include "includes/gallery.php";?>
 
-    <!-- About Section -->
-    <section id="about">
-        <h2 class="section-title">About Us</h2>
-        
-        <div class="about-container">
-            <div class="about-content">
-                <div class="mission-vision">
-                    <h3>Our Mission</h3>
-                    <p>To provide reliable, high-speed internet connectivity to homes and businesses across Pampanga, empowering our community with seamless digital experiences and fostering growth through innovative technology solutions.</p>
-                </div>
-                
-                <div class="mission-vision">
-                    <h3>Our Vision</h3>
-                    <p>To be the leading fiber internet provider in Central Luzon, recognized for our exceptional service, cutting-edge technology, and commitment to customer satisfaction, bridging the digital divide one connection at a time.</p>
-                </div>
+<!-- About Section -->
+<section id="about">
+    <h2 class="section-title">About Us</h2>
+    <div class="text-center mb-4">
+        <button type="button" class="btn btn-primary view-details-btn" data-bs-toggle="modal" data-bs-target="#aboutModal">
+            <i class="fas fa-info-circle me-2"></i>View Details
+        </button>
+    </div>
+    <div class="about-container">
+        <div class="about-content">
+            <div class="mission-vision">
+                <h3>Our Mission</h3>
+                <p>At Angeleyes Solutions Inc., we provide fast internet (P2P Air Fiber, FTTH, Cable TV), strong security (CCTV, FDAS, Smart Gates), solar power, and tech systems like Piso WiFi, online payments, and LAN/Data Cabinets. We're here to make modern tech easy, affordable, and available for everyone—backed by expert support every step of the way</p>
             </div>
             
-            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="ANGELEYES Team" class="about-image">
+            <div class="mission-vision">
+                <h3>Our Vision</h3>
+                <p>Filipino home and business with smart, secure, and sustainable tech solutions.</p>
+            </div>
         </div>
-    </section>
+        
+        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="ANGELEYES Team" class="about-image">
+    </div>
+</section>
+
+<style>
+/* Add this to your existing CSS */
+.text-justify {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+}
+
+.view-details-btn {
+    display: inline-block;
+    margin: 0 auto;
+}
+</style>
+<!-- Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutModalLabel">About Angeleyes Solutions Inc.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-justify">Angeleyes Solutions Inc. is a trusted systems integrator and contractor specializing in comprehensive technology solutions across Northern Luzon. From high-speed internet infrastructure—such as P2P AirFiber, FTTH, and Cable TV—to essential services like CCTV & surveillance, FDAS (Fire Detection and Alarm Systems), LAN & wireless networks, and online payment systems, we empower homes, businesses, and institutions with smarter, safer, and more connected environments.</p>
+                
+                <p class="text-justify">We also offer solar & power systems, data & server cabinet setups, smart gate automation, Piso WiFi machines, and full telecom integration (PBX, VoIP, intercom). With every service backed by professional installation and reliable after-sales support, Angeleyes is your all-in-one partner for future-ready infrastructure. Contact us now and upgrade with confidence.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
     
     <!-- Branches Section -->
        <?php include "includes/branches.php";?>
@@ -266,6 +302,8 @@ try {
             <img class="modal-image" src="images/modal-images/3.png" alt="Modal Image 3">
             <img class="modal-image" src="images/modal-images/4.png" alt="Modal Image 4">
             <img class="modal-image" src="images/modal-images/5.png" alt="Modal Image 5">
+            <img class="modal-image" src="images/modal-images/6.png" alt="Modal Image 6">
+            <img class="modal-image" src="images/modal-images/7.png" alt="Modal Image 7">
             
         </div>
         <div class="image-indicators" id="imageIndicators">
