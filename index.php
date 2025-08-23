@@ -43,7 +43,8 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="angeleyes-logo.png">
     <link rel="stylesheet" href="assets/css/styles.css">
-
+<link rel="stylesheet" href="assets/css/rates.css">
+<link rel="stylesheet" href="assets/css/pay-button.css">
     <link rel="stylesheet" href="assets/css/light-modal.css">
     <link rel="stylesheet" href="assets/css/gallery.css">
     <style>
@@ -88,18 +89,21 @@ try {
             <img src="angeleyes-logo.png" alt="ANGELEYES Logo">
         </a>
         
-        <div class="nav-links">
-            <a href="#home">Home</a>
-            <a href="#about">About Us</a>
-            <a href="#branches">Branches</a>
-            <a href="#coverage">Coverage</a>
-            <a href="#features">Features</a>
-            <a href="#inquiry">Inquiry</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#faq">FAQ</a>
-        </div>
+       <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#about">About Us</a>
+    <a href="#branches">Branches</a>
+    <a href="#coverage">Coverage</a>
+    <a href="#features">Features</a>
+    <a href="#inquiry">Inquiry</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+    <a href="#inquiry">Contact Us</a>
+</div>
+
+
+        <a href="payment" class="cta-button pay-online-link">Pay Online</a>
         
-        <a href="#inquiry" class="cta-button">Contact Us</a>
         
         <div class="mobile-menu-btn">
             <i class="fas fa-bars"></i>
@@ -110,12 +114,12 @@ try {
 <section id="home">
     <div class="hero-content">
         <div class="hero-text">
-            <h1 class="hero-title">Ultra-Fast <span>Fiber Optic</span> Internet</h1>
+           <h1 class="hero-title">Reliable <span>Connectivity</span> & Smart Solutions – P2P Air Fiber, FTTH, Cable TV, CCTV, Solar, FDAS & More</h1>
             
             <!-- Mobile SVG container (shown only on mobile) -->
             <div class="mobile-svg-container"></div>
             
-            <p class="hero-subtitle">Experience lightning-fast speeds with ANGELEYES's reliable fiber internet connection across Solano, Nueva Vizcaya. Stream, game, and work without interruptions.</p>
+            <p class="hero-subtitle">Angeleyes Solutions Inc. delivers fast, secure, and future-ready technologies—from high-speed internet (P2P Air Fiber, FTTH, Cable TV) to smart systems like CCTV, fire alarm, solar power, and LAN/WiFi infrastructure. We offer complete solutions for homes, businesses, and communities.</p>
             
             <div class="hero-buttons">
                 <a href="#internet-plans" class="cta-button">View Plans</a>
@@ -167,7 +171,7 @@ try {
 <section id="about">
     <h2 class="section-title">About Us</h2>
     <div class="text-center mb-4">
-        <button type="button" class="btn btn-primary view-details-btn" data-bs-toggle="modal" data-bs-target="#aboutModal">
+        <button type="button" class=" cta-button" data-bs-toggle="modal" data-bs-target="#aboutModal">
             <i class="fas fa-info-circle me-2"></i>View Details
         </button>
     </div>
@@ -232,22 +236,42 @@ try {
    <?php include "includes/coverage.php";?>
     
 
+
+
     <section id="coverage">
         <h2 class="section-title">P2P Air Fiber</h2>
-        <p style="text-align: center; margin-bottom: 2rem; color: var(--gray);">Now available in this municipalities:</p>
+        <p style="text-align: center; margin-bottom: 2rem; color: var(--gray);">Now available in these municipalities:</p>
         
         <div class="coverage-container">
-        <div class="municipality-tabs">
-            <div class="municipality-tab active" data-target="nueva-vizcaya">Nueva Vizcaya</div>
+            <div class="municipality-tabs">
+                <div class="municipality-tab active" data-target="nueva-vizcaya">Nueva Vizcaya</div>
+            </div>
+            
+            <div class="rates-row">
+                <div class="rate-card">
+                    <div class="rate-speed">20 Mbps</div>
+                    <div class="rate-price">₱999<span>/month</span></div>
+                </div>
+                <div class="rate-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="rate-speed">50 Mbps</div>
+                    <div class="rate-price">₱1,499<span>/month</span></div>
+                </div>
+                <div class="rate-card">
+                    <div class="rate-speed">100 Mbps</div>
+                    <div class="rate-price">₱2,299<span>/month</span></div>
+                </div>
+            </div>
+            
+            <div class="barangay-list active" id="nueva-vizcaya">
+                <div class="barangay-item">Solano</div>
+                <div class="barangay-item">Bayombong</div>
+                <div class="barangay-item">Runruno</div>
+                <div class="barangay-item">Villaverde</div>
+            </div>
         </div>
-        
-        <div class="barangay-list active" id="nueva-vizcaya">
-            <div class="barangay-item">Solano</div>
-            <div class="barangay-item">Bayombong</div>
-            <div class="barangay-item">Runruno</div>
-            <div class="barangay-item">Villaverde</div>
-        </div>
-    </div>
+    </section>
+
      
     </section>
     <!-- Features Section -->
@@ -262,17 +286,17 @@ try {
             <div class="feature-cards">
                 <div class="feature-card">
                     <h3>Fast</h3>
-                    <p>Faster speeds are available for your home. With speeds up to 200, 300, and 400 Mbps; ANGELEYES Fiber Optic Internet currently offers the top speed – much faster than DSL and cable.</p>
+                    <p>Enjoy ultra-low latency with P2P Air Fiber, FTTH, and Cable TV backed by a 99.9% uptime guarantee — perfect for streaming, gaming, and remote work.</p>
                 </div>
                 
                 <div class="feature-card">
                     <h3>Reliable</h3>
-                    <p>Reliable Internet means a stable internet connection. With ANGELEYES, you don't have to struggle to keep your bandwidth high and won't have to worry about frequent disconnections.</p>
+                    <p>Our 24/7 customer support and proactive maintenance ensure your services stay uninterrupted — from internet to smart systems.</p>
                 </div>
                 
                 <div class="feature-card">
                     <h3>Secure</h3>
-                    <p>Security matters. Knowing that your work is secure, that your accounts are safe, and that your information is protected is important. ANGELEYES Internet offers you this and more.</p>
+                    <p>We integrate network-grade encryption, CCTV, FDAS, and Smart Gate access systems for total peace of mind in homes and businesses.</p>
                 </div>
             </div>
         </div>

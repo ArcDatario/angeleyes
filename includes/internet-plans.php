@@ -1,6 +1,6 @@
 
 <section id="internet-plans">
-    <h2 class="section-title">Internet Plans</h2>
+    <h2 class="section-title">FFTH Internet Plans</h2>
     <p style="text-align: center; margin-bottom: 2rem; color: var(--gray);">Pick the best plan for you.</p>
     
     <div class="pricing-container">
