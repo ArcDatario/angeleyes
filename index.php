@@ -302,6 +302,9 @@ try {
             <img class="modal-image" src="images/modal-images/5.png" alt="Modal Image 5">
             <img class="modal-image" src="images/modal-images/6.png" alt="Modal Image 6">
             <img class="modal-image" src="images/modal-images/7.png" alt="Modal Image 7">
+            <img class="modal-image" src="images/modal-images/8.png" alt="Modal Image 8">
+            <img class="modal-image" src="images/modal-images/9.png" alt="Modal Image 9">
+            <img class="modal-image" src="images/modal-images/10.png" alt="Modal Image 10">
             
         </div>
         <div class="image-indicators" id="imageIndicators">
