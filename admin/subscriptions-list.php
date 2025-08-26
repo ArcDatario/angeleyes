@@ -110,7 +110,8 @@ $result = $conn->query($sql);
                       <thead>
                         <tr>
                          
-                          <th>User ID</th>
+                          <th>Reference</th>
+                          
                           <th>User Name</th>
                           <th>Plan</th>
                           <th>Price</th>
@@ -123,7 +124,8 @@ $result = $conn->query($sql);
                       <?php if ($result && $result->num_rows > 0): ?>
                         <?php while ($row = $result->fetch_assoc()): ?>
                           <tr>
-                            <td><?= htmlspecialchars($row['subscriber_user_id']) ?></td>
+                            <td><?= htmlspecialchars($row['reference'] ?? '') ?></td>
+                            
                             <td><?= htmlspecialchars($row['full_name'] ?? '') ?></td>
                             <td><?= htmlspecialchars($row['plan_name'] ?? 'N/A') ?></td>
                             <td><?= htmlspecialchars(isset($row['price']) ? number_format((float)$row['price'],2) : '0.00') ?></td>
@@ -186,9 +188,7 @@ $result = $conn->query($sql);
             <div class="col-12"><strong>Status:</strong> <div id="modalStatus"></div></div>
           </div>
           <hr />
-          <div class="row mt-2">
-            <div class="col-12"><strong>Reference:</strong> <div id="modalReference"></div></div>
-          </div>
+          <!-- Reference is intentionally removed from modal as per requirements -->
           <div class="row mt-2">
             <div class="col-12"><strong>Address:</strong> <div id="modalAddress"></div></div>
           </div>
@@ -218,7 +218,7 @@ $result = $conn->query($sql);
           document.getElementById('modalStarted').textContent = this.getAttribute('data-started') || '';
           document.getElementById('modalDue').textContent = this.getAttribute('data-due') || '';
           document.getElementById('modalStatus').textContent = this.getAttribute('data-status') || '';
-          document.getElementById('modalReference').textContent = this.getAttribute('data-reference') || '';
+          // Reference is intentionally not populated in the modal anymore
           document.getElementById('modalAddress').textContent = this.getAttribute('data-address') || '';
           viewModal.show();
         });
