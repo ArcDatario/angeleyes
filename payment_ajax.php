@@ -57,6 +57,8 @@ try {
             $response['subscription'] = $subscription;
             break;
                     
+        // ... previous code ...
+
         case 'send_verification':
             if (!isset($_SESSION['payment_flow'])) {
                 throw new Exception('Session expired. Please start again.');
@@ -104,20 +106,100 @@ try {
                     $mail->Port       = 587;
 
                     // Recipients
-                    $mail->setFrom('capstoneproject0101@gmail.com', 'Angel Eyes');
+                    $mail->setFrom('capstoneproject0101@gmail.com', 'Angel Eyes Solutions');
                     $mail->addAddress($user['email']);
 
                     // Content
                     $mail->isHTML(true);
-                    $mail->Subject = 'Your Angel Eyes Verification Code';
+                    $mail->Subject = 'Your Angel Eyes Solutions Verification Code';
+                    
+                    // Professional email template
                     $mail->Body    = "
-                        <h3>Angel Eyes Verification Code</h3>
-                        <p>Hello {$user['full_name']},</p>
-                        <p>Your verification code is: <strong>{$code}</strong></p>
-                        <p>This code will expire in 10 minutes.</p>
-                        <p>If you didn't request this, please ignore this email.</p>
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset='utf-8'>
+                            <style>
+                                body {
+                                    font-family: Arial, sans-serif;
+                                    line-height: 1.6;
+                                    color: #333;
+                                    max-width: 600px;
+                                    margin: 0 auto;
+                                    padding: 20px;
+                                }
+                                .header {
+                                    text-align: center;
+                                    border-bottom: 2px solid #f0f0f0;
+                                    padding-bottom: 20px;
+                                    margin-bottom: 30px;
+                                }
+                                .logo {
+                                    max-width: 180px;
+                                    margin-bottom: 15px;
+                                }
+                                .company-name {
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    color: #2c3e50;
+                                    margin: 0;
+                                }
+                                .code-container {
+                                    background-color: #f8f9fa;
+                                    border: 2px dashed #dee2e6;
+                                    border-radius: 8px;
+                                    padding: 25px;
+                                    text-align: center;
+                                    margin: 30px 0;
+                                }
+                                .verification-code {
+                                    font-size: 32px;
+                                    font-weight: bold;
+                                    letter-spacing: 5px;
+                                    color: #2c3e50;
+                                    padding: 10px;
+                                    background-color: #fff;
+                                    border-radius: 5px;
+                                    display: inline-block;
+                                }
+                                .footer {
+                                    text-align: center;
+                                    margin-top: 30px;
+                                    padding-top: 20px;
+                                    border-top: 2px solid #f0f0f0;
+                                    color: #7f8c8d;
+                                    font-size: 12px;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='header'>
+                                <img src='cid:company_logo' alt='Angel Eyes Solutions' class='logo'>
+                                <h1 class='company-name'>Angel Eyes Solutions</h1>
+                            </div>
+                            
+                            <p>Hello {$user['full_name']},</p>
+                            <p>Your verification code for payment processing is:</p>
+                            
+                            <div class='code-container'>
+                                <div class='verification-code'>{$code}</div>
+                            </div>
+                            
+                            <p>This code will expire in 10 minutes for security purposes.</p>
+                            <p>If you didn't request this verification, please ignore this email or contact our support team.</p>
+                            
+                            <div class='footer'>
+                                <p>&copy; " . date('Y') . " Angel Eyes Solutions. All rights reserved.</p>
+                                <p>This is an automated message, please do not reply to this email.</p>
+                            </div>
+                        </body>
+                        </html>
                     ";
-                    $mail->AltBody = "Your Angel Eyes verification code is: {$code}";
+                    
+                    // Add embedded image
+                    $mail->AddEmbeddedImage('angeleyes-logo.png', 'company_logo', 'angeleyes-logo.png');
+                    
+                    $mail->AltBody = "Your Angel Eyes Solutions verification code is: {$code}. This code will expire in 10 minutes.";
 
                     if (!$mail->send()) {
                         throw new Exception('Failed to send email: ' . $mail->ErrorInfo);
@@ -132,6 +214,8 @@ try {
             $_SESSION['payment_flow']['step'] = 3;
             $response['success'] = true;
             break;
+
+
             
         case 'verify_code':
             if (!isset($_SESSION['payment_flow']['verification_code'])) {
